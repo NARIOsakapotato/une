@@ -306,7 +306,7 @@ function makeOverlay(map, onDraw){
   const ov=new google.maps.OverlayView(); let svg=null;
   ov.onAdd=function(){ svg=document.createElementNS('http://www.w3.org/2000/svg','svg'); svg.setAttribute('class','ov'); this.getPanes().overlayMouseTarget.appendChild(svg); };
   ov.onRemove=function(){ if(svg&&svg.parentNode) svg.parentNode.removeChild(svg); svg=null; };
-  ov.draw=function(){ if(!svg) return; const pr=this.getProjection(); if(!pr) return; const b=map.getBounds(); if(!b) return;
+  ov.draw=function(){ if(!svg) return; if(!ORIGIN){ svg.innerHTML=''; return; } const pr=this.getProjection(); if(!pr) return; const b=map.getBounds(); if(!b) return;
     const sw=pr.fromLatLngToDivPixel(b.getSouthWest()), ne=pr.fromLatLngToDivPixel(b.getNorthEast());
     const L=Math.min(sw.x,ne.x)-200, T=Math.min(sw.y,ne.y)-200, W=Math.abs(ne.x-sw.x)+400, H=Math.abs(sw.y-ne.y)+400;
     svg.style.left=L+'px'; svg.style.top=T+'px'; svg.setAttribute('width',W); svg.setAttribute('height',H); svg.setAttribute('viewBox',`${L} ${T} ${W} ${H}`);
@@ -576,6 +576,6 @@ function drawPlan({P,k}){
 window.initApp=function(){ ME=localStorage.getItem('une_user')||''; if(!ME){ showLogin(''); return; } $('meName').textContent=ME; boot(); };
 window.gm_authFailure=function(){ alert('Googleマップが使えません（APIキーの制限か課金設定）。'); };
 </script>
-<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9ansyC5Z3PacdvFoigWb95z_eNhieYQg&callback=initApp&language=ja&region=JP&v=weekly"></script>
+<script async src="https://maps.googleapis.com/maps/api/js?loading=async&key=AIzaSyC9ansyC5Z3PacdvFoigWb95z_eNhieYQg&callback=initApp&language=ja&region=JP&v=weekly"></script>
 </body>
 </html>
