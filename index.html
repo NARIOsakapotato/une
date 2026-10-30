@@ -77,6 +77,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .login button{margin-top:12px;width:100%;padding:11px;border-radius:10px;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:15px}
 .login .err{color:var(--danger);font-size:13px;min-height:1.4em;margin-top:8px}
 .srch{display:flex;gap:6px;margin:8px 0}
+.flabel{text-shadow:0 0 3px #000,0 0 3px #000,0 1px 2px #000;pointer-events:none}
 .srch input{flex:1;font:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg)}
 .srch button{padding:8px 12px;border-radius:8px;background:var(--panel2);color:var(--fg)}
 .addf{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
@@ -187,7 +188,7 @@ input[type=search]{width:100%;font:inherit;font-size:14px;padding:9px 12px;borde
     <button type="button" id="clear">やり直し</button>
     <button type="button" id="save" disabled>保存して設計へ</button>
   </div>
-  <div class="srch"><input type="text" id="addr" placeholder="住所や地名で地図を移動（例：富田林市 〇〇町）"><button type="button" id="addrGo">移動</button><button type="button" id="gps" title="今いる場所へ">📍</button></div>
+  <div class="srch"><input type="text" id="addr" placeholder="住所や地名で地図を移動（例：富田林市 〇〇町）"><button type="button" id="addrGo">移動</button><button type="button" id="gps" title="今いる場所へ">📍</button><button type="button" id="allf" title="登録済みの圃場を全部表示">全圃場</button></div>
   <div class="mapwrap">
     <p class="hint" id="reg-hint"></p>
     <p class="areacheck" id="reg-area"></p>
@@ -331,6 +332,22 @@ function mapOpts(center,zoom,labels){ return {center,zoom,mapTypeId:labels?'hybr
 // ===== 画面 =====
 let FIELDS=[], DESIGNED={}, SETTINGS={}, regSel=null, pts=[]; // pts: 登録画面の外周（ローカルm）
 let regMap=null, regOv=null, planMap=null, planOv=null;
+let fieldShapes=[]; // 登録済み圃場の表示（Polygon と名前ラベル）
+function drawAllFields(){
+  fieldShapes.forEach(o=>o.setMap(null)); fieldShapes=[];
+  if(!regMap) return;
+  FIELDS.filter(f=>f.outline&&f.outline.length>=3).forEach(f=>{
+    const path=f.outline.map(p=>({lat:+p[0],lng:+p[1]})); const isSel=regSel&&regSel.id===f.id;
+    const poly=new google.maps.Polygon({paths:path,map:regMap,strokeColor:isSel?'#ffd400':'#34e07a',strokeOpacity:.95,strokeWeight:isSel?3:2,fillColor:isSel?'#ffd400':'#34e07a',fillOpacity:isSel?.08:.18,clickable:!isSel,zIndex:isSel?2:1});
+    if(!isSel) poly.addListener('click',()=>selectField(f.id));
+    fieldShapes.push(poly);
+    const c=path.reduce((o,q)=>({lat:o.lat+q.lat/path.length,lng:o.lng+q.lng/path.length}),{lat:0,lng:0});
+    const mk=new google.maps.Marker({position:c,map:regMap,clickable:!isSel,icon:{path:google.maps.SymbolPath.CIRCLE,scale:0},label:{text:f.n,color:'#fff',fontSize:'12px',fontWeight:'700',className:'flabel'},zIndex:3});
+    if(!isSel) mk.addListener('click',()=>selectField(f.id));
+    fieldShapes.push(mk);
+  });
+}
+function fitAllFields(){ const b=new google.maps.LatLngBounds(); let n=0; FIELDS.forEach(f=>{ if(f.outline) f.outline.forEach(p=>{ b.extend({lat:+p[0],lng:+p[1]}); n++; }); }); if(n) regMap.fitBounds(b,60); }
 function showScreen(k){ $('scr-reg').hidden=k!=='reg'; $('scr-design').hidden=k!=='design'; $('lock').hidden=k!=='design'; $('nav-reg').setAttribute('aria-pressed',k==='reg'); $('nav-design').setAttribute('aria-pressed',k==='design'); $('title').textContent=k==='reg'?'圃場登録':((regSel?regSel.n:'')+'　畝立て設計図');
   setTimeout(()=>{ if(k==='reg'&&regMap) google.maps.event.trigger(regMap,'resize'); if(k==='design'&&planMap){ google.maps.event.trigger(planMap,'resize'); planOv&&planOv.redraw(); } },50); }
 $('nav-reg').onclick=()=>showScreen('reg');
@@ -344,7 +361,7 @@ async function boot(){
     regMap.addListener('click',e=>{ if(!regSel||regDragging) return; if(!ORIGIN) ORIGIN={lat:e.latLng.lat(),lng:e.latLng.lng()}; pts.push(toLocal({lat:e.latLng.lat(),lng:e.latLng.lng()})); updateReg(); });
     // 外周の点をドラッグ
     attachDrag($('map'),regMap,()=>regOv,(el)=>{ const p=el.closest('.rpt'); return p?{i:+p.dataset.i}:null; },(d,ll)=>{ pts[d.i]=toLocal(ll); updateReg(); },()=>{ regDragging=false; }); }
-  showScreen('reg');
+  drawAllFields(); fitAllFields(); showScreen('reg');
 }
 let regDragging=false;
 // 共通：オーバーレイ上のハンドルをドラッグ。ドラッグ中はマップを動かさない
@@ -374,7 +391,7 @@ async function selectField(id){
     else { ORIGIN=null; pts=[]; if(f.lat&&f.lng){ regMap.setCenter({lat:+f.lat,lng:+f.lng}); regMap.setZoom(18); } }
     $('nav-design').disabled=!(f.outline&&f.outline.length>=3);
   }catch(e){ $('reg-name').textContent=e.message; }
-  updateReg();
+  drawAllFields(); updateReg();
 }
 function updateReg(){
   $('reg-name').textContent=regSel?`${regSel.g}／${regSel.n}（アグリノート ${regSel.a.toFixed(2)}a）`:'圃場を選んでください';
@@ -398,10 +415,11 @@ $('undo').onclick=()=>{ pts.pop(); if(!pts.length) ORIGIN=null; updateReg(); };
 $('clear').onclick=()=>{ pts=[]; ORIGIN=null; updateReg(); };
 $('save').onclick=async()=>{ if(!regSel||pts.length<3) return; $('save').disabled=true; $('save').textContent='保存中…';
   try{ const outline=pts.map(p=>{ const ll=toLatLng(p); return [+ll.lat.toFixed(7),+ll.lng.toFixed(7)]; }); await api('saveOutline',{fieldId:regSel.id,outline});
-    regSel.hasOutline=true; regSel.full=Object.assign(regSel.full||{},{outline}); renderList(); openDesign(regSel, outline, regSel.full.design, regSel.full.designVer||0);
+    regSel.hasOutline=true; regSel.outline=outline; regSel.full=Object.assign(regSel.full||{},{outline}); renderList(); drawAllFields(); openDesign(regSel, outline, regSel.full.design, regSel.full.designVer||0);
   }catch(e){ alert('保存できませんでした：'+e.message); } finally{ $('save').textContent='保存して設計へ'; $('save').disabled=false; } };
 $('addrGo').onclick=()=>{ const q=$('addr').value.trim(); if(!q) return; new google.maps.Geocoder().geocode({address:q,region:'jp'},(res,st)=>{ if(st==='OK'&&res[0]){ regMap.setCenter(res[0].geometry.location); regMap.setZoom(17); } else alert('見つかりませんでした'); }); };
 $('addr').addEventListener('keydown',e=>{ if(e.key==='Enter') $('addrGo').click(); });
+$('allf').onclick=fitAllFields;
 $('gps').onclick=()=>{ if(!navigator.geolocation) return; navigator.geolocation.getCurrentPosition(p=>{ regMap.setCenter({lat:p.coords.latitude,lng:p.coords.longitude}); regMap.setZoom(18); },()=>alert('位置情報が取れませんでした')); };
 $('nfAdd').onclick=async()=>{ const name=$('nfName').value.trim(); if(!name) return; try{ const r=await api('addField',{name,area:+$('nfArea').value||0}); FIELDS.push({id:r.id,g:'その他',n:name,a:+$('nfArea').value||0,hasOutline:false}); $('nfName').value=''; $('nfArea').value=''; renderList(); selectField(r.id); }catch(e){ alert(e.message); } };
 $('nav-design').addEventListener('click',()=>{ if(regSel&&regSel.full&&regSel.full.outline&&regSel.full.outline.length>=3&&designFieldId!==regSel.id) openDesign(regSel,regSel.full.outline,regSel.full.design,regSel.full.designVer||0); });
