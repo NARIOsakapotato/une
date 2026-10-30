@@ -329,7 +329,7 @@ const LABEL_STYLE=[
   {featureType:'administrative',elementType:'labels',stylers:[{visibility:'on'}]},
   {featureType:'road',elementType:'labels',stylers:[{visibility:'on'}]},
 ];
-function mapOpts(center,zoom,labels){ return {center,zoom,mapTypeId:labels?'hybrid':'satellite',styles:LABEL_STYLE,tilt:0,disableDefaultUI:true,zoomControl:true,gestureHandling:'greedy',clickableIcons:false,keyboardShortcuts:false,rotateControl:false,mapTypeControl:true,mapTypeControlOptions:{mapTypeIds:['hybrid','satellite'],position:google.maps.ControlPosition.TOP_RIGHT}}; }
+function mapOpts(center,zoom,labels){ return {center,zoom,maxZoom:22,mapTypeId:labels?'hybrid':'satellite',styles:LABEL_STYLE,tilt:0,disableDefaultUI:true,zoomControl:true,gestureHandling:'greedy',clickableIcons:false,keyboardShortcuts:false,rotateControl:false,mapTypeControl:true,mapTypeControlOptions:{mapTypeIds:['hybrid','satellite'],position:google.maps.ControlPosition.TOP_RIGHT}}; }
 
 // ===== 画面 =====
 let FIELDS=[], DESIGNED={}, SETTINGS={}, regSel=null, pts=[]; // pts: 登録画面の外周（ローカルm）
