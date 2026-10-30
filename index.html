@@ -67,6 +67,10 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .gmap{position:absolute;inset:0;background:var(--field)}
 .ov{position:absolute;overflow:visible;pointer-events:none}
 .ov .hit{pointer-events:auto}
+.viewonly .rail,.viewonly #zedit,.viewonly .savebar{display:none!important}
+.viewonly .shell{grid-template-columns:minmax(0,1fr) 320px}
+@media (max-width:900px){.viewonly .shell{grid-template-columns:1fr}}
+.viewonly .hint{background:rgba(52,224,122,.25)}
 .savebar{position:absolute;right:12px;bottom:12px;z-index:2;font-size:12px;font-family:var(--mono);background:var(--panel);border:1px solid var(--line);color:var(--muted);padding:5px 10px;border-radius:8px}
 .savebar.busy{color:var(--warn)} .savebar.err{color:var(--danger);border-color:var(--danger)}
 .login{position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:16px}
@@ -170,7 +174,7 @@ input[type=search]{width:100%;font:inherit;font-size:14px;padding:9px 12px;borde
 <header class="top">
   <h1 id="title">圃場登録</h1>
   <button type="button" id="lock" aria-pressed="true" hidden>🔒 ロック中</button>
-  <nav class="nav"><button type="button" id="nav-reg" aria-pressed="true">圃場登録</button><button type="button" id="nav-design" aria-pressed="false" disabled>畝立て設計</button></nav>
+  <nav class="nav"><button type="button" id="nav-reg" aria-pressed="true">圃場</button><button type="button" id="nav-view" aria-pressed="false" disabled>設計図</button><button type="button" id="nav-design" aria-pressed="false" disabled>設計する</button></nav>
   <button type="button" id="logout" title="名前を変える">👤 <span id="meName"></span></button>
 </header>
 
@@ -184,9 +188,13 @@ input[type=search]{width:100%;font:inherit;font-size:14px;padding:9px 12px;borde
 <section class="stage">
   <div class="regbar">
     <span id="reg-name"></span>
+    <button type="button" id="editOutline" hidden>✏️ 外周を直す</button>
+    <button type="button" id="cancelEdit" hidden>やめる</button>
     <button type="button" id="undo">一つ戻す</button>
     <button type="button" id="clear">やり直し</button>
-    <button type="button" id="save" disabled>保存して設計へ</button>
+    <button type="button" id="save" disabled>保存</button>
+    <button type="button" id="goView" hidden>設計図を見る</button>
+    <button type="button" id="goDesign" hidden>設計する</button>
   </div>
   <div class="srch"><input type="text" id="addr" placeholder="住所や地名で地図を移動（例：富田林市 〇〇町）"><button type="button" id="addrGo">移動</button><button type="button" id="gps" title="今いる場所へ">📍</button><button type="button" id="allf" title="登録済みの圃場を全部表示">全圃場</button></div>
   <div class="mapwrap">
@@ -332,7 +340,7 @@ const LABEL_STYLE=[
 function mapOpts(center,zoom,labels){ return {center,zoom,maxZoom:22,mapTypeId:labels?'hybrid':'satellite',styles:LABEL_STYLE,tilt:0,disableDefaultUI:true,zoomControl:true,gestureHandling:'greedy',clickableIcons:false,keyboardShortcuts:false,rotateControl:false,mapTypeControl:true,mapTypeControlOptions:{mapTypeIds:['hybrid','satellite'],position:google.maps.ControlPosition.TOP_RIGHT}}; }
 
 // ===== 画面 =====
-let FIELDS=[], DESIGNED={}, SETTINGS={}, regSel=null, pts=[]; // pts: 登録画面の外周（ローカルm）
+let FIELDS=[], DESIGNED={}, SETTINGS={}, regSel=null, pts=[], regEdit=false; // pts: 登録画面の外周（ローカルm）。regEdit: 外周を触れる状態
 let regMap=null, regOv=null, planMap=null, planOv=null;
 let fieldShapes=[]; // 登録済み圃場の表示（Polygon と名前ラベル）
 function drawAllFields(){
@@ -350,7 +358,8 @@ function drawAllFields(){
   });
 }
 function fitAllFields(){ const b=new google.maps.LatLngBounds(); let n=0; FIELDS.forEach(f=>{ if(f.outline) f.outline.forEach(p=>{ b.extend({lat:+p[0],lng:+p[1]}); n++; }); }); if(n) regMap.fitBounds(b,60); }
-function showScreen(k){ $('scr-reg').hidden=k!=='reg'; $('scr-design').hidden=k!=='design'; $('lock').hidden=k!=='design'; $('nav-reg').setAttribute('aria-pressed',k==='reg'); $('nav-design').setAttribute('aria-pressed',k==='design'); $('title').textContent=k==='reg'?'圃場登録':((regSel?regSel.n:'')+'　畝立て設計図');
+let viewOnly=false;
+function showScreen(k){ $('scr-reg').hidden=k!=='reg'; $('scr-design').hidden=k!=='design'; $('lock').hidden=k!=='design'||viewOnly; $('nav-reg').setAttribute('aria-pressed',k==='reg'); $('nav-view').setAttribute('aria-pressed',k==='design'&&viewOnly); $('nav-design').setAttribute('aria-pressed',k==='design'&&!viewOnly); $('title').textContent=k==='reg'?'圃場':((regSel?regSel.n:'')+(viewOnly?'　設計図':'　設計中')); document.body.classList.toggle('viewonly',k==='design'&&viewOnly);
   setTimeout(()=>{ if(k==='reg'&&regMap) google.maps.event.trigger(regMap,'resize'); if(k==='design'&&planMap){ google.maps.event.trigger(planMap,'resize'); planOv&&planOv.redraw(); } },50); }
 $('nav-reg').onclick=()=>showScreen('reg');
 $('nav-design').onclick=()=>showScreen('design');
@@ -360,9 +369,9 @@ async function boot(){
   if(SETTINGS['株間cm']) $('sp').value=SETTINGS['株間cm']; if(SETTINGS['基肥kg_10a']) $('fert').value=SETTINGS['基肥kg_10a']; if(SETTINGS['明渠幅cm']) $('dw').value=SETTINGS['明渠幅cm'];
   renderList();
   if(!regMap){ regMap=new google.maps.Map($('map'),mapOpts(HOME,16,true)); regOv=makeOverlay(regMap,drawReg);
-    regMap.addListener('click',e=>{ if(!regSel||regDragging) return; if(!ORIGIN) ORIGIN={lat:e.latLng.lat(),lng:e.latLng.lng()}; pts.push(toLocal({lat:e.latLng.lat(),lng:e.latLng.lng()})); updateReg(); });
+    regMap.addListener('click',e=>{ if(!regSel||regDragging||!regEdit) return; if(!ORIGIN) ORIGIN={lat:e.latLng.lat(),lng:e.latLng.lng()}; pts.push(toLocal({lat:e.latLng.lat(),lng:e.latLng.lng()})); updateReg(); });
     // 外周の点をドラッグ
-    attachDrag($('map'),regMap,()=>regOv,(el)=>{ const p=el.closest('.rpt'); return p?{i:+p.dataset.i}:null; },(d,ll)=>{ pts[d.i]=toLocal(ll); updateReg(); },()=>{ regDragging=false; }); }
+    attachDrag($('map'),regMap,()=>regOv,(el)=>{ if(!regEdit) return null; const p=el.closest('.rpt'); return p?{i:+p.dataset.i}:null; },(d,ll)=>{ pts[d.i]=toLocal(ll); updateReg(); },()=>{ regDragging=false; }); }
   drawAllFields(); fitAllFields(); showScreen('reg');
 }
 let regDragging=false;
@@ -391,6 +400,7 @@ async function selectField(id){
   try{ const f=await api('getField',{fieldId:id}); regSel.full=f;
     if(f.outline&&f.outline.length>=3){ ORIGIN=centroidLL(f.outline); pts=f.outline.map(p=>toLocal({lat:p[0],lng:p[1]})); const b=new google.maps.LatLngBounds(); f.outline.forEach(q=>b.extend({lat:+q[0],lng:+q[1]})); regMap.fitBounds(b,80); }
     else { ORIGIN=null; pts=[]; if(f.lat&&f.lng){ regMap.setCenter({lat:+f.lat,lng:+f.lng}); regMap.setZoom(18); } }
+    regEdit=!(f.outline&&f.outline.length>=3);
     $('nav-design').disabled=!(f.outline&&f.outline.length>=3);
   }catch(e){ $('reg-name').textContent=e.message; }
   drawAllFields(); updateReg();
@@ -400,31 +410,40 @@ function updateReg(){
   const el=$('reg-area');
   if(regSel&&pts.length>=3){ const a=Math.abs(area(pts))/100, d=a-regSel.a, pct=regSel.a?d/regSel.a*100:0; const per=plen(pts.concat([pts[0]])); el.textContent=`面積 ${a.toFixed(2)}a（${Math.round(a*100).toLocaleString()}㎡・外周 ${per.toFixed(0)}m）／ アグリノート ${regSel.a.toFixed(2)}a ／ 差 ${d>=0?'+':''}${d.toFixed(2)}a（${pct>=0?'+':''}${pct.toFixed(1)}%）`; el.className='areacheck'+(Math.abs(pct)>2?' bad':''); }
   else { const L=plen(pts); el.textContent=regSel?`${pts.length}点（あと${Math.max(0,3-pts.length)}点で面積が出る）${L?`　ここまで ${L.toFixed(1)}m`:''}`:''; el.className='areacheck'; }
-  $('save').disabled=!(regSel&&pts.length>=3);
-  $('reg-hint').textContent=regSel?'航空写真で圃場の角を順にタップ。点はドラッグで直せる。':'左の一覧から圃場を選ぶ。地図は住所検索か📍で移動。';
-  $('map').classList.toggle('draw',!!regSel);
+  const has=!!(regSel&&regSel.full&&regSel.full.outline&&regSel.full.outline.length>=3);
+  $('editOutline').hidden=!(regSel&&!regEdit); $('cancelEdit').hidden=!(regSel&&regEdit&&has);
+  $('undo').hidden=$('clear').hidden=!(regSel&&regEdit); $('save').hidden=!(regSel&&regEdit);
+  $('save').disabled=!(regSel&&regEdit&&pts.length>=3);
+  $('goView').hidden=!(has&&!regEdit&&DESIGNED[regSel.id]); $('goDesign').hidden=!(has&&!regEdit);
+  $('reg-hint').textContent=!regSel?'左の一覧か地図の枠から圃場を選ぶ。地図は住所検索か📍で移動。':regEdit?'航空写真で圃場の角を順にタップ。点はドラッグで直せる。終わったら「保存」。':(has?'登録済み。外周を直すときは「✏️ 外周を直す」。':'未登録。「✏️ 外周を直す」を押して角をタップ。');
+  $('map').classList.toggle('draw',!!(regSel&&regEdit));
   regOv&&regOv.redraw();
 }
 function drawReg({P,k}){
   if(!ORIGIN||!pts.length) return '';
   const Pt=pts.map(p=>P(p[0],p[1])); const S=Pt.map(q=>`${q[0].toFixed(1)},${q[1].toFixed(1)}`).join(' '); let s='';
-  s+= pts.length>=3?`<polygon points="${S}" fill="rgba(220,60,30,.3)" stroke="#ff4d1f" stroke-width="2.5"/>`:`<polyline points="${S}" fill="none" stroke="#ff4d1f" stroke-width="2.5"/>`;
+  s+= pts.length>=3?`<polygon points="${S}" fill="${regEdit?'rgba(220,60,30,.3)':'rgba(255,212,0,.12)'}" stroke="${regEdit?'#ff4d1f':'#ffd400'}" stroke-width="${regEdit?2.5:3}"/>`:`<polyline points="${S}" fill="none" stroke="#ff4d1f" stroke-width="2.5"/>`;
   for(let i=0;i<pts.length;i++){ const [x1,y1]=pts[i],[x2,y2]=pts[(i+1)%pts.length]; if(pts.length<3&&i===pts.length-1) break; const L=Math.hypot(x2-x1,y2-y1); const m=P((x1+x2)/2,(y1+y2)/2); s+=`<text x="${m[0].toFixed(1)}" y="${(m[1]+4).toFixed(1)}" font-size="11" text-anchor="middle" fill="#fff" font-family="var(--mono)" paint-order="stroke" stroke="#000" stroke-width="3">${L.toFixed(1)}m</text>`; }
-  Pt.forEach((q,i)=>{ s+=`<circle class="rpt hit" data-i="${i}" cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="9" fill="#ffd400" stroke="#fff" stroke-width="2" style="cursor:move"/>`; });
+  if(regEdit) Pt.forEach((q,i)=>{ s+=`<circle class="rpt hit" data-i="${i}" cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="9" fill="#ffd400" stroke="#fff" stroke-width="2" style="cursor:move"/>`; });
   return s;
 }
+$('editOutline').onclick=()=>{ regEdit=true; updateReg(); };
+$('cancelEdit').onclick=()=>{ const f=regSel.full; ORIGIN=centroidLL(f.outline); pts=f.outline.map(p=>toLocal({lat:p[0],lng:p[1]})); regEdit=false; updateReg(); };
+$('goView').onclick=()=>{ const f=regSel.full; openDesign(regSel,f.outline,f.design,f.designVer||0,true); };
+$('goDesign').onclick=()=>{ const f=regSel.full; openDesign(regSel,f.outline,f.design,f.designVer||0,false); };
 $('undo').onclick=()=>{ pts.pop(); if(!pts.length) ORIGIN=null; updateReg(); };
 $('clear').onclick=()=>{ pts=[]; ORIGIN=null; updateReg(); };
 $('save').onclick=async()=>{ if(!regSel||pts.length<3) return; $('save').disabled=true; $('save').textContent='保存中…';
   try{ const outline=pts.map(p=>{ const ll=toLatLng(p); return [+ll.lat.toFixed(7),+ll.lng.toFixed(7)]; }); await api('saveOutline',{fieldId:regSel.id,outline});
-    regSel.hasOutline=true; regSel.outline=outline; regSel.full=Object.assign(regSel.full||{},{outline}); renderList(); drawAllFields(); openDesign(regSel, outline, regSel.full.design, regSel.full.designVer||0);
-  }catch(e){ alert('保存できませんでした：'+e.message); } finally{ $('save').textContent='保存して設計へ'; $('save').disabled=false; } };
+    regSel.hasOutline=true; regSel.outline=outline; regSel.full=Object.assign(regSel.full||{},{outline}); regEdit=false; renderList(); drawAllFields(); updateReg();
+  }catch(e){ alert('保存できませんでした：'+e.message); } finally{ $('save').textContent='保存'; } };
 $('addrGo').onclick=()=>{ const q=$('addr').value.trim(); if(!q) return; new google.maps.Geocoder().geocode({address:q,region:'jp'},(res,st)=>{ if(st==='OK'&&res[0]){ regMap.setCenter(res[0].geometry.location); regMap.setZoom(17); } else alert('見つかりませんでした'); }); };
 $('addr').addEventListener('keydown',e=>{ if(e.key==='Enter') $('addrGo').click(); });
 $('allf').onclick=fitAllFields;
 $('gps').onclick=()=>{ if(!navigator.geolocation) return; navigator.geolocation.getCurrentPosition(p=>{ regMap.setCenter({lat:p.coords.latitude,lng:p.coords.longitude}); regMap.setZoom(18); },()=>alert('位置情報が取れませんでした')); };
 $('nfAdd').onclick=async()=>{ const name=$('nfName').value.trim(); if(!name) return; try{ const r=await api('addField',{name,area:+$('nfArea').value||0}); FIELDS.push({id:r.id,g:'その他',n:name,a:+$('nfArea').value||0,hasOutline:false}); $('nfName').value=''; $('nfArea').value=''; renderList(); selectField(r.id); }catch(e){ alert(e.message); } };
-$('nav-design').addEventListener('click',()=>{ if(regSel&&regSel.full&&regSel.full.outline&&regSel.full.outline.length>=3&&designFieldId!==regSel.id) openDesign(regSel,regSel.full.outline,regSel.full.design,regSel.full.designVer||0); });
+$('nav-design').onclick=()=>{ const f=regSel&&regSel.full; if(f&&f.outline&&f.outline.length>=3) openDesign(regSel,f.outline,f.design,f.designVer||0,false); };
+$('nav-view').onclick=async()=>{ if(!regSel) return; try{ const f=await api('getField',{fieldId:regSel.id}); regSel.full=f; if(f.outline&&f.outline.length>=3) openDesign(regSel,f.outline,f.design,f.designVer||0,true); }catch(e){ alert(e.message); } };
 
 // ===== 畝立て設計 =====
 let POLY=[], zones=[], ditches=[], mode='ridge', drawPts=[], selZ=-1, selD=-1, showLabels=true, snapOn=true, locked=true, designVer=0;
@@ -476,12 +495,13 @@ function layoutZone(z, minlen, sp, dwid){
 function rectZone(z){ const [p0,p1]=z.pts; const th=-(Math.atan2(p1[1]-p0[1],p1[0]-p0[0]) + z.ang*Math.PI/180); const Q=rot(z.pts,th);
   const y34=(Q[2][1]+Q[3][1])/2; Q[2]=[Q[1][0],y34]; Q[3]=[Q[0][0],y34]; const B=rot(Q,-th); z.pts[2]=B[2]; z.pts[3]=B[3]; }
 
-function openDesign(field, outline, design, ver){
+function openDesign(field, outline, design, ver, view){
+  viewOnly=!!view;
   regSel=field; designFieldId=field.id; ORIGIN=centroidLL(outline); POLY=outline.map(p=>toLocal({lat:p[0],lng:p[1]}));
   zones=[]; ditches=[]; designVer=ver||0;
   if(design&&design.zones){ zones=design.zones.map(z=>({...z,off:new Set(z.off||[])})); ditches=design.ditches||[]; if(design.snapOn!==undefined) snapOn=!!design.snapOn; }
-  locked=!!(design&&design.zones&&design.zones.length); drawPts=[]; selZ=selD=-1; mode=locked?'ridge':'main';
-  $('nav-design').disabled=false; showScreen('design');
+  locked=viewOnly||!!(design&&design.zones&&design.zones.length); drawPts=[]; selZ=selD=-1; mode=locked?'ridge':'main';
+  $('nav-design').disabled=false; $('nav-view').disabled=false; showScreen('design');
   if(!planMap){ planMap=new google.maps.Map($('plan'),mapOpts(ORIGIN,18,true)); planOv=makeOverlay(planMap,drawPlan);
     planMap.addListener('click',e=>{ if(planDragging) return; const pm=toLocal({lat:e.latLng.lat(),lng:e.latLng.lng()}); onMapTap(pm,null); });
     attachDrag($('plan'),planMap,()=>planOv,(el)=>{ if(locked) return null; const z=el.closest('.zpt'), d=el.closest('.dpt'); if(z) return {type:'z',z:+z.dataset.z,i:+z.dataset.i}; if(d) return {type:'d',d:+d.dataset.d,i:+d.dataset.i}; return null; },
@@ -512,7 +532,7 @@ document.addEventListener('click',e=>{ const t=e.target; if(!(t instanceof Eleme
 
 ['sp','fert','dw','minlen'].forEach(id=>$(id).addEventListener('input',()=>render(false)));
 ['w','p','zang'].forEach(id=>$(id).addEventListener('input',()=>{ const z=zones[selZ]; if(!z) return; z.w=+$('w').value; z.p=+$('p').value; z.ang=+$('zang').value; if(snapOn) snapZone(z); render(); }));
-$('lock').onclick=()=>{ locked=!locked; drawPts=[]; mode='ridge'; render(false); };
+$('lock').onclick=()=>{ if(viewOnly) return; locked=!locked; drawPts=[]; mode='ridge'; render(false); };
 $('z-rect').onclick=()=>{ const z=zones[selZ]; if(!z) return; rectZone(z); if(snapOn) snapZone(z); render(); };
 $('snap').onclick=()=>{ snapOn=!snapOn; if(snapOn) zones.forEach(snapZone); render(); };
 document.querySelectorAll('#machine button').forEach(b=>b.onclick=()=>{ const z=zones[selZ]; if(!z) return; z.machine=b.dataset.m; const m=MACHINES[z.machine]; z.w=m.w; z.p=m.p; if(snapOn) snapZone(z); render(); });
@@ -535,7 +555,7 @@ window.addEventListener('beforeunload',e=>{ if(dirty||saving){ e.preventDefault(
 // ===== 描画 =====
 let lays=[];
 function render(save){
-  if(save!==false) queueSave();
+  if(save!==false&&!viewOnly) queueSave();
   const minlen=+$('minlen').value, sp=+$('sp').value/100, fertRate=+$('fert').value, dwid=+$('dw').value/100;
   const z=zones[selZ];
   $('zedit').hidden=!z;
@@ -548,7 +568,7 @@ function render(save){
   $('labels').setAttribute('aria-pressed',showLabels);
   $('hint').textContent= mode==='main'||mode==='head' ? `${mode==='main'?'本畝':'枕畝'}：角を4つ順にタップ（${drawPts.length}/4）。1→2の向きに畝が走る。`
     : mode==='dA'||mode==='dB' ? `明渠（畝立て${mode==='dA'?'前':'後'}）：線を順にタップして、左の「線を確定」（${drawPts.length}点）。`
-    : locked ? 'ロック中。図形は動かない。ドラッグで移動、ピンチ／ホイールで拡大。直すときは上の🔒を押す。' : '編集中。畝タップでオン／オフ、点はドラッグ。終わったら上の🔓でロック。';
+    : viewOnly ? '設計図（閲覧）。ドラッグで移動、ピンチ／ホイールで拡大。まとまりをタップで本数を確認。直すときは上の「設計する」。' : locked ? 'ロック中。図形は動かない。ドラッグで移動、ピンチ／ホイールで拡大。直すときは上の🔒を押す。' : '編集中。畝タップでオン／オフ、点はドラッグ。終わったら上の🔓でロック。';
   lays=zones.map(zz=>layoutZone(zz,minlen,sp,dwid));
   let nM=0,lenM=0,nH=0,lenH=0,plants=0,pieces=0,skipped=0,manualOff=0;
   lays.forEach((L,i)=>{ const kind=zones[i].kind; for(const r of L.ridges){ if(r.ok){ if(kind==='main') nM++; else nH++; for(const pc of r.pieces){ if(kind==='main') lenM+=pc.len; else lenH+=pc.len; plants+=pc.plants; pieces++; } } else if(!r.auto) skipped++; else manualOff++; } });
