@@ -317,7 +317,16 @@ function makeOverlay(map, onDraw){
   };
   ov.setMap(map); ov.svgEl=()=>svg; ov.redraw=()=>ov.draw(); return ov;
 }
-function mapOpts(center,zoom){ return {center,zoom,mapTypeId:'satellite',tilt:0,disableDefaultUI:true,zoomControl:true,gestureHandling:'greedy',clickableIcons:false,keyboardShortcuts:false,rotateControl:false,mapTypeControl:true,mapTypeControlOptions:{mapTypeIds:['satellite','hybrid'],position:google.maps.ControlPosition.TOP_RIGHT}}; }
+// 地名：行政区（市町村・町名）と道路だけ残す。店・施設・水系のラベルは消す
+const LABEL_STYLE=[
+  {featureType:'poi',stylers:[{visibility:'off'}]},
+  {featureType:'transit',stylers:[{visibility:'off'}]},
+  {featureType:'water',elementType:'labels',stylers:[{visibility:'off'}]},
+  {featureType:'landscape',elementType:'labels',stylers:[{visibility:'off'}]},
+  {featureType:'administrative',elementType:'labels',stylers:[{visibility:'on'}]},
+  {featureType:'road',elementType:'labels',stylers:[{visibility:'on'}]},
+];
+function mapOpts(center,zoom,labels){ return {center,zoom,mapTypeId:labels?'hybrid':'satellite',styles:LABEL_STYLE,tilt:0,disableDefaultUI:true,zoomControl:true,gestureHandling:'greedy',clickableIcons:false,keyboardShortcuts:false,rotateControl:false,mapTypeControl:true,mapTypeControlOptions:{mapTypeIds:['hybrid','satellite'],position:google.maps.ControlPosition.TOP_RIGHT}}; }
 
 // ===== 画面 =====
 let FIELDS=[], DESIGNED={}, SETTINGS={}, regSel=null, pts=[]; // pts: 登録画面の外周（ローカルm）
@@ -331,7 +340,7 @@ async function boot(){
   try{ const d=await api('init',{}); FIELDS=d.fields; DESIGNED=d.designed||{}; SETTINGS=d.settings||{}; }catch(e){ $('lgErr').textContent=e.message; showLogin(e.message); return; }
   if(SETTINGS['株間cm']) $('sp').value=SETTINGS['株間cm']; if(SETTINGS['基肥kg_10a']) $('fert').value=SETTINGS['基肥kg_10a']; if(SETTINGS['明渠幅cm']) $('dw').value=SETTINGS['明渠幅cm'];
   renderList();
-  if(!regMap){ regMap=new google.maps.Map($('map'),mapOpts(HOME,16)); regOv=makeOverlay(regMap,drawReg);
+  if(!regMap){ regMap=new google.maps.Map($('map'),mapOpts(HOME,16,true)); regOv=makeOverlay(regMap,drawReg);
     regMap.addListener('click',e=>{ if(!regSel||regDragging) return; if(!ORIGIN) ORIGIN={lat:e.latLng.lat(),lng:e.latLng.lng()}; pts.push(toLocal({lat:e.latLng.lat(),lng:e.latLng.lng()})); updateReg(); });
     // 外周の点をドラッグ
     attachDrag($('map'),regMap,()=>regOv,(el)=>{ const p=el.closest('.rpt'); return p?{i:+p.dataset.i}:null; },(d,ll)=>{ pts[d.i]=toLocal(ll); updateReg(); },()=>{ regDragging=false; }); }
@@ -453,7 +462,7 @@ function openDesign(field, outline, design, ver){
   if(design&&design.zones){ zones=design.zones.map(z=>({...z,off:new Set(z.off||[])})); ditches=design.ditches||[]; if(design.snapOn!==undefined) snapOn=!!design.snapOn; }
   locked=!!(design&&design.zones&&design.zones.length); drawPts=[]; selZ=selD=-1; mode=locked?'ridge':'main';
   $('nav-design').disabled=false; showScreen('design');
-  if(!planMap){ planMap=new google.maps.Map($('plan'),mapOpts(ORIGIN,18)); planOv=makeOverlay(planMap,drawPlan);
+  if(!planMap){ planMap=new google.maps.Map($('plan'),mapOpts(ORIGIN,18,true)); planOv=makeOverlay(planMap,drawPlan);
     planMap.addListener('click',e=>{ if(planDragging) return; const pm=toLocal({lat:e.latLng.lat(),lng:e.latLng.lng()}); onMapTap(pm,null); });
     attachDrag($('plan'),planMap,()=>planOv,(el)=>{ if(locked) return null; const z=el.closest('.zpt'), d=el.closest('.dpt'); if(z) return {type:'z',z:+z.dataset.z,i:+z.dataset.i}; if(d) return {type:'d',d:+d.dataset.d,i:+d.dataset.i}; return null; },
       (dr,ll)=>{ planDragging=true; const pm=toLocal(ll); if(dr.type==='z'){ zones[dr.z].pts[dr.i]=pm; selZ=dr.z; selD=-1; } else { ditches[dr.d].pts[dr.i]=pm; selD=dr.d; selZ=-1; } render(false); },
