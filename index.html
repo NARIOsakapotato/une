@@ -71,6 +71,11 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .viewonly .shell{grid-template-columns:minmax(0,1fr) 320px}
 @media (max-width:900px){.viewonly .shell{grid-template-columns:1fr}}
 .viewonly .hint{background:rgba(52,224,122,.25)}
+.regbar2{position:absolute;left:12px;bottom:12px;z-index:3;display:flex;gap:8px}
+.regbar2 button{padding:11px 16px;border-radius:10px;font-size:14px;font-weight:700;background:var(--panel);color:var(--fg);border:1px solid var(--line)}
+.regbar2 #regBtn{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.regbar2 #regBtn.dirty{background:var(--sel);color:#2a2200;border-color:var(--sel);box-shadow:0 0 0 4px rgba(255,225,77,.25)}
+.viewonly .regbar2{display:none!important}
 .savebar{position:absolute;right:12px;bottom:12px;z-index:2;font-size:12px;font-family:var(--mono);background:var(--panel);border:1px solid var(--line);color:var(--muted);padding:5px 10px;border-radius:8px}
 .savebar.busy{color:var(--warn)} .savebar.err{color:var(--danger);border-color:var(--danger)}
 .login{position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:16px}
@@ -95,7 +100,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .zoom button{width:38px;height:36px;border-radius:7px;font-size:16px;font-family:var(--mono);color:var(--fg)}
 .zoom button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
 .zoom button.txt{font-family:var(--sans);font-size:11px}
-.view{position:absolute;left:12px;bottom:12px;z-index:2;display:flex;gap:4px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:4px}
+.view{position:absolute;left:12px;top:52px;z-index:2;display:flex;gap:4px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:4px}
 .view button{padding:7px 10px;border-radius:7px;font-size:12px;color:var(--muted)}
 .view button[aria-pressed="true"]{background:var(--panel2);color:var(--fg)}
 .areacheck{position:absolute;left:12px;right:12px;top:48px;z-index:2;font-size:12px;font-family:var(--mono);font-variant-numeric:tabular-nums;padding:5px 10px;border-radius:8px;background:rgba(52,224,122,.18);color:#dfffe9;pointer-events:none}
@@ -229,6 +234,7 @@ input[type=search]{width:100%;font:inherit;font-size:14px;padding:9px 12px;borde
     <div id="plan" class="gmap"></div>
     <div class="view"><button type="button" id="labels" aria-pressed="true">m表示</button><button type="button" id="fit-field" class="txt">圃場へ</button></div>
     <div class="savebar" id="savebar"></div>
+    <div class="regbar2"><button type="button" id="revertBtn" disabled>元に戻す</button><button type="button" id="regBtn" disabled>設計を登録（登録済）</button></div>
   </div>
   <div class="legend">
     <span><i style="background:var(--main)"></i>本畝</span>
@@ -361,7 +367,7 @@ function fitAllFields(){ const b=new google.maps.LatLngBounds(); let n=0; FIELDS
 let viewOnly=false;
 function showScreen(k){ $('scr-reg').hidden=k!=='reg'; $('scr-design').hidden=k!=='design'; $('lock').hidden=k!=='design'||viewOnly; $('nav-reg').setAttribute('aria-pressed',k==='reg'); $('nav-view').setAttribute('aria-pressed',k==='design'&&viewOnly); $('nav-design').setAttribute('aria-pressed',k==='design'&&!viewOnly); $('title').textContent=k==='reg'?'圃場':((regSel?regSel.n:'')+(viewOnly?'　設計図':'　設計中')); document.body.classList.toggle('viewonly',k==='design'&&viewOnly);
   setTimeout(()=>{ if(k==='reg'&&regMap) google.maps.event.trigger(regMap,'resize'); if(k==='design'&&planMap){ google.maps.event.trigger(planMap,'resize'); planOv&&planOv.redraw(); } },50); }
-$('nav-reg').onclick=()=>showScreen('reg');
+$('nav-reg').onclick=()=>{ if(!confirmLeave()) return; dirty=false; showScreen('reg'); };
 $('nav-design').onclick=()=>showScreen('design');
 
 async function boot(){
@@ -429,8 +435,8 @@ function drawReg({P,k}){
 }
 $('editOutline').onclick=()=>{ regEdit=true; updateReg(); };
 $('cancelEdit').onclick=()=>{ const f=regSel.full; ORIGIN=centroidLL(f.outline); pts=f.outline.map(p=>toLocal({lat:p[0],lng:p[1]})); regEdit=false; updateReg(); };
-$('goView').onclick=()=>{ const f=regSel.full; openDesign(regSel,f.outline,f.design,f.designVer||0,true); };
-$('goDesign').onclick=()=>{ const f=regSel.full; openDesign(regSel,f.outline,f.design,f.designVer||0,false); };
+$('goView').onclick=()=>{ if(!confirmLeave()) return; const f=regSel.full; openDesign(regSel,f.outline,f.design,f.designVer||0,true); };
+$('goDesign').onclick=()=>{ if(!confirmLeave()) return; const f=regSel.full; openDesign(regSel,f.outline,f.design,f.designVer||0,false); };
 $('undo').onclick=()=>{ pts.pop(); if(!pts.length) ORIGIN=null; updateReg(); };
 $('clear').onclick=()=>{ pts=[]; ORIGIN=null; updateReg(); };
 $('save').onclick=async()=>{ if(!regSel||pts.length<3) return; $('save').disabled=true; $('save').textContent='保存中…';
@@ -442,8 +448,8 @@ $('addr').addEventListener('keydown',e=>{ if(e.key==='Enter') $('addrGo').click(
 $('allf').onclick=fitAllFields;
 $('gps').onclick=()=>{ if(!navigator.geolocation) return; navigator.geolocation.getCurrentPosition(p=>{ regMap.setCenter({lat:p.coords.latitude,lng:p.coords.longitude}); regMap.setZoom(18); },()=>alert('位置情報が取れませんでした')); };
 $('nfAdd').onclick=async()=>{ const name=$('nfName').value.trim(); if(!name) return; try{ const r=await api('addField',{name,area:+$('nfArea').value||0}); FIELDS.push({id:r.id,g:'その他',n:name,a:+$('nfArea').value||0,hasOutline:false}); $('nfName').value=''; $('nfArea').value=''; renderList(); selectField(r.id); }catch(e){ alert(e.message); } };
-$('nav-design').onclick=()=>{ const f=regSel&&regSel.full; if(f&&f.outline&&f.outline.length>=3) openDesign(regSel,f.outline,f.design,f.designVer||0,false); };
-$('nav-view').onclick=async()=>{ if(!regSel) return; try{ const f=await api('getField',{fieldId:regSel.id}); regSel.full=f; if(f.outline&&f.outline.length>=3) openDesign(regSel,f.outline,f.design,f.designVer||0,true); }catch(e){ alert(e.message); } };
+$('nav-design').onclick=()=>{ if(!confirmLeave()) return; const f=regSel&&regSel.full; if(f&&f.outline&&f.outline.length>=3) openDesign(regSel,f.outline,f.design,f.designVer||0,false); };
+$('nav-view').onclick=async()=>{ if(!regSel) return; if(!confirmLeave()) return; try{ const f=await api('getField',{fieldId:regSel.id}); regSel.full=f; if(f.outline&&f.outline.length>=3) openDesign(regSel,f.outline,f.design,f.designVer||0,true); }catch(e){ alert(e.message); } };
 
 // ===== 畝立て設計 =====
 let POLY=[], zones=[], ditches=[], mode='ridge', drawPts=[], selZ=-1, selD=-1, showLabels=true, snapOn=true, locked=true, designVer=0;
@@ -498,8 +504,7 @@ function rectZone(z){ const [p0,p1]=z.pts; const th=-(Math.atan2(p1[1]-p0[1],p1[
 function openDesign(field, outline, design, ver, view){
   viewOnly=!!view;
   regSel=field; designFieldId=field.id; ORIGIN=centroidLL(outline); POLY=outline.map(p=>toLocal({lat:p[0],lng:p[1]}));
-  zones=[]; ditches=[]; designVer=ver||0;
-  if(design&&design.zones){ zones=design.zones.map(z=>({...z,off:new Set(z.off||[])})); ditches=design.ditches||[]; if(design.snapOn!==undefined) snapOn=!!design.snapOn; }
+  designVer=ver||0; lastSaved=design?JSON.parse(JSON.stringify(design)):null; dirty=false; loadDesignInto(design);
   locked=viewOnly||!!(design&&design.zones&&design.zones.length); drawPts=[]; selZ=selD=-1; mode=locked?'ridge':'main';
   $('nav-design').disabled=false; $('nav-view').disabled=false; showScreen('design');
   if(!planMap){ planMap=new google.maps.Map($('plan'),mapOpts(ORIGIN,18,true)); planOv=makeOverlay(planMap,drawPlan);
@@ -532,6 +537,7 @@ document.addEventListener('click',e=>{ const t=e.target; if(!(t instanceof Eleme
 
 ['sp','fert','dw','minlen'].forEach(id=>$(id).addEventListener('input',()=>render(false)));
 ['w','p','zang'].forEach(id=>$(id).addEventListener('input',()=>{ const z=zones[selZ]; if(!z) return; z.w=+$('w').value; z.p=+$('p').value; z.ang=+$('zang').value; if(snapOn) snapZone(z); render(); }));
+$('regBtn').onclick=doSave; $('revertBtn').onclick=revertDesign;
 $('lock').onclick=()=>{ if(viewOnly) return; locked=!locked; drawPts=[]; mode='ridge'; render(false); };
 $('z-rect').onclick=()=>{ const z=zones[selZ]; if(!z) return; rectZone(z); if(snapOn) snapZone(z); render(); };
 $('snap').onclick=()=>{ snapOn=!snapOn; if(snapOn) zones.forEach(snapZone); render(); };
@@ -543,19 +549,24 @@ $('del').onclick=()=>{ if(selZ>=0) zones.splice(selZ,1); else if(selD>=0) ditche
 $('reset').onclick=()=>{ if(!confirm('この圃場の設計を全部消しますか？')) return; zones=[]; ditches=[]; drawPts=[]; selZ=selD=-1; mode='ridge'; render(); };
 
 // ===== 保存（変更のたびに1.5秒後にまとめて保存）=====
-let saveTimer=null, saving=false, dirty=false;
+// 設計は「設計を登録」を押したときだけ保存する。触っただけでは本番は変わらない
+let saving=false, dirty=false, lastSaved=null;
 function serDesign(){ return {zones:zones.map(z=>({...z,off:[...z.off]})),ditches,snapOn,origin:ORIGIN,savedAt:new Date().toISOString()}; }
-function queueSave(){ dirty=true; $('savebar').textContent='未保存…'; $('savebar').className='savebar busy'; clearTimeout(saveTimer); saveTimer=setTimeout(doSave,1500); }
-async function doSave(){ if(saving){ queueSave(); return; } saving=true; dirty=false;
-  try{ const r=await api('saveDesign',{fieldId:regSel.id,design:serDesign(),baseVer:designVer}); designVer=r.ver; DESIGNED[regSel.id]=new Date().toISOString(); $('savebar').textContent='保存済 '+new Date().toTimeString().slice(0,5); $('savebar').className='savebar'; }
-  catch(e){ $('savebar').textContent='保存失敗：'+e.message; $('savebar').className='savebar err'; }
-  finally{ saving=false; if(dirty) queueSave(); } }
+function queueSave(){ dirty=true; updateSaveUI(); }
+function updateSaveUI(){ const b=$('regBtn'), r=$('revertBtn'); if(!b) return; b.disabled=saving||!dirty; r.disabled=saving||!dirty; b.classList.toggle('dirty',dirty); b.textContent=saving?'登録中…':dirty?'設計を登録（未登録の変更あり）':'設計を登録（登録済）'; }
+async function doSave(){ if(saving||!regSel) return; saving=true; updateSaveUI();
+  try{ const d=serDesign(); const r=await api('saveDesign',{fieldId:regSel.id,design:d,baseVer:designVer}); designVer=r.ver; DESIGNED[regSel.id]=new Date().toISOString(); lastSaved=JSON.parse(JSON.stringify(d)); if(regSel.full) { regSel.full.design=lastSaved; regSel.full.designVer=designVer; } dirty=false; $('savebar').textContent='登録済 '+new Date().toTimeString().slice(0,5); $('savebar').className='savebar'; }
+  catch(e){ alert('登録できませんでした：'+e.message); }
+  finally{ saving=false; updateSaveUI(); } }
+function revertDesign(){ if(!dirty) return; if(!confirm('登録していない変更を捨てて、最後に登録した状態に戻しますか？')) return; loadDesignInto(lastSaved); dirty=false; drawPts=[]; selZ=selD=-1; mode='ridge'; render(false); updateSaveUI(); }
+function loadDesignInto(design){ zones=[]; ditches=[]; if(design&&design.zones){ zones=design.zones.map(z=>({...z,off:new Set(z.off||[])})); ditches=(design.ditches||[]).map(d=>({...d,pts:d.pts.map(p=>p.slice())})); if(design.snapOn!==undefined) snapOn=!!design.snapOn; } }
+function confirmLeave(){ return !dirty || confirm('登録していない変更があります。登録せずに離れますか？'); }
 window.addEventListener('beforeunload',e=>{ if(dirty||saving){ e.preventDefault(); e.returnValue=''; } });
 
 // ===== 描画 =====
 let lays=[];
 function render(save){
-  if(save!==false&&!viewOnly) queueSave();
+  if(save!==false&&!viewOnly) queueSave(); else updateSaveUI();
   const minlen=+$('minlen').value, sp=+$('sp').value/100, fertRate=+$('fert').value, dwid=+$('dw').value/100;
   const z=zones[selZ];
   $('zedit').hidden=!z;
