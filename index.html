@@ -411,7 +411,7 @@ function attachDrag(div,map,getOv,hitTest,onMove,onEnd){
   let drag=null;
   div.addEventListener('pointerdown',e=>{ const t=e.target; if(!(t instanceof Element)) return; const h=hitTest(t); if(!h) return; drag=h; regDragging=true; map.setOptions({draggable:false,gestureHandling:'none'}); e.preventDefault(); e.stopPropagation(); },true);
   div.addEventListener('pointermove',e=>{ if(!drag) return; const ll=pixelToLatLng(map,getOv(),div,e); if(ll) onMove(drag,ll); e.preventDefault(); e.stopPropagation(); },true);
-  const end=e=>{ if(!drag) return; drag=null; map.setOptions({draggable:true,gestureHandling:'greedy'}); setTimeout(()=>onEnd&&onEnd(),0); };
+  const end=e=>{ if(!drag) return; drag=null; map.setOptions({draggable:true,gestureHandling:'greedy'}); setTimeout(()=>{ regDragging=false; onEnd&&onEnd(); },0); }; // regDragging はここで必ず戻す（設計画面で点を触った後に圃場登録のタップが効かんくなってた）
   div.addEventListener('pointerup',end,true); div.addEventListener('pointercancel',end,true);
 }
 function pixelToLatLng(map,ov,div,e){ const pr=ov.getProjection(); if(!pr) return null; const r=div.getBoundingClientRect(); const c=map.getCenter(); const cp=pr.fromLatLngToContainerPixel(c);
@@ -436,7 +436,16 @@ async function selectField(id){
   }catch(e){ $('reg-name').textContent=e.message; }
   drawAllFields(); updateReg();
 }
-function updateReg(){
+// 保存前の下書き（打った角）は、10分触らんかったら消す。1分前に案内
+const DRAFT_MIN=10; let draftTimer=null, draftWarn=null, draftNote='';
+function armDraft(){ clearTimeout(draftTimer); clearTimeout(draftWarn); draftNote='';
+  if(!(regSel&&regEdit&&pts.length)) return;
+  draftWarn=setTimeout(()=>{ draftNote='　⚠ あと1分で下書きが消えます（点を触ればリセット）'; paintRegHint(); },(DRAFT_MIN-1)*60*1000);
+  draftTimer=setTimeout(()=>{ if(!(regSel&&regEdit&&pts.length)) return; const has=!!(regSel.full&&regSel.full.outline&&regSel.full.outline.length>=3);
+    if(has){ $('cancelEdit').click(); } else { pts=[]; ORIGIN=null; updateReg(); } draftNote='　🕒 '+DRAFT_MIN+'分触らんかったので下書きを消しました'; paintRegHint(); },DRAFT_MIN*60*1000); }
+function paintRegHint(){ $('reg-hint').textContent=regHintText()+draftNote; }
+function regHintText(){ return !regSel?'左の一覧か地図の枠から圃場を選ぶ。地図は住所検索か📍で移動。':regEdit?'航空写真で圃場の角を順にタップ。点はドラッグで直せる。終わったら「保存」。':((regSel.full&&regSel.full.outline&&regSel.full.outline.length>=3)?'登録済み。外周を直すときは「✏️ 外周を直す」。':'未登録。「✏️ 外周を直す」を押して角をタップ。'); }
+function updateReg(){ armDraft();
   $('reg-name').textContent=regSel?`${regSel.g}／${regSel.n}（アグリノート ${regSel.a.toFixed(2)}a）`:'圃場を選んでください';
   const el=$('reg-area');
   if(regSel&&pts.length>=3){ const a=Math.abs(area(pts))/100, d=a-regSel.a, pct=regSel.a?d/regSel.a*100:0; const per=plen(pts.concat([pts[0]])); el.textContent=`面積 ${a.toFixed(2)}a（${Math.round(a*100).toLocaleString()}㎡・外周 ${per.toFixed(0)}m）／ アグリノート ${regSel.a.toFixed(2)}a ／ 差 ${d>=0?'+':''}${d.toFixed(2)}a（${pct>=0?'+':''}${pct.toFixed(1)}%）`; el.className='areacheck'+(Math.abs(pct)>2?' bad':''); }
@@ -446,7 +455,7 @@ function updateReg(){
   $('undo').hidden=$('clear').hidden=!(regSel&&regEdit); $('save').hidden=!(regSel&&regEdit);
   $('save').disabled=!(regSel&&regEdit&&pts.length>=3);
   $('goView').hidden=!(has&&!regEdit&&DESIGNED[regSel.id]); $('goDesign').hidden=!(has&&!regEdit);
-  $('reg-hint').textContent=!regSel?'左の一覧か地図の枠から圃場を選ぶ。地図は住所検索か📍で移動。':regEdit?'航空写真で圃場の角を順にタップ。点はドラッグで直せる。終わったら「保存」。':(has?'登録済み。外周を直すときは「✏️ 外周を直す」。':'未登録。「✏️ 外周を直す」を押して角をタップ。');
+  paintRegHint();
   $('map').classList.toggle('draw',!!(regSel&&regEdit));
   regOv&&regOv.redraw();
 }
@@ -594,8 +603,8 @@ document.addEventListener('pointerdown',e=>{ const t=e.target; if(t instanceof E
 function fitField(){ const b=new google.maps.LatLngBounds(); POLY.forEach(p=>b.extend(toLatLng(p))); planMap.fitBounds(b,40); }
 // ドラッグ：点（zpt/dpt）、または選択中のまとまりの中（丸ごと移動）
 function planHit(el){ if(locked) return null; const z=el.closest('.zpt'), d=el.closest('.dpt');
-  if(z){ const h={type:'z',z:+z.dataset.z,i:+z.dataset.i}; selPt={...h}; if(selZ!==h.z){ selZ=h.z; selD=selM=-1; } render(false); return h; }
-  if(d){ const h={type:'d',d:+d.dataset.d,i:+d.dataset.i}; selPt={...h}; if(selD!==h.d){ selD=h.d; selZ=selM=-1; } render(false); return h; }
+  if(z){ const h={type:'z',z:+z.dataset.z,i:+z.dataset.i}; selPt={...h}; if(selZ!==h.z){ selZ=h.z; selD=selM=-1; } return h; }
+  if(d){ const h={type:'d',d:+d.dataset.d,i:+d.dataset.i}; selPt={...h}; if(selD!==h.d){ selD=h.d; selZ=selM=-1; } return h; }
   if(mode==='ridge'&&selZ>=0){ const zh=el.closest('.zone-hit,.ridge-hit'); const zi=zh?+(zh.dataset.i!==undefined?zh.dataset.i:zh.dataset.z):-1; if(zi===selZ) return {type:'m',z:zi,orig:zones[zi].pts.map(q=>q.slice())}; }
   return null; }
 function planMove(dr,ll){ let pm=toLocal(ll);
@@ -603,7 +612,7 @@ function planMove(dr,ll){ let pm=toLocal(ll);
   planDragging=true; dragging=true;
   if(dr.type==='z'){ pm=snapCorner(pm,zones[dr.z].kind); zones[dr.z].pts[dr.i]=pm; } else { const d=ditches[dr.d]; const nb=dr.i>0?d.pts[dr.i-1]:d.pts[1]; if(nb) pm=snapDitchPt(nb,pm,d.ref||ditchRef[d.when]); d.pts[dr.i]=pm; }
   render(false); }
-function planEnd(){ const moved=planDragging; planDragging=false; dragging=false; if(moved){ if(selZ>=0&&snapOn&&selPt&&selPt.type==='z') snapZone(zones[selZ]); render(); } }
+function planEnd(){ const moved=planDragging; planDragging=false; dragging=false; if(moved){ if(selZ>=0&&snapOn&&selPt&&selPt.type==='z') snapZone(zones[selZ]); render(); } else render(false); }
 function addPt(pm){
   if(mode==='main'||mode==='head'){ const sc=snapCorner(pm,mode); const onEdge=sc!==pm; pm=sc;
     if(drawPts.length===1&&zsnapOn&&!onEdge){ const ea=edgeAngleNear(pm); pm=snapAngle(drawPts[0],pm,ea.th); drawBase=ea.i; } if(drawPts.length===0) drawBase=undefined; }
