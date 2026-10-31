@@ -103,6 +103,13 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .view{position:absolute;left:12px;top:52px;z-index:2;display:flex;gap:4px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:4px}
 .view button{padding:7px 10px;border-radius:7px;font-size:12px;color:var(--muted)}
 .view button[aria-pressed="true"]{background:var(--panel2);color:var(--fg)}
+.nudge{position:absolute;left:12px;bottom:70px;z-index:3;min-width:120px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:6px;display:grid;grid-template-columns:34px 34px 34px;gap:3px;justify-items:center}
+.nudge[hidden]{display:none}
+.nudge button{width:34px;height:32px;border-radius:7px;font-size:15px;color:var(--fg);background:var(--panel2)}
+.nudge .lab{grid-column:1/-1;font-size:11px;color:var(--fg);text-align:center;line-height:1.3}
+.nudge .stp{grid-column:1/-1;display:flex;gap:3px}.nudge .stp button{width:auto;flex:1;font-size:11px;height:26px}.nudge .stp button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.viewonly .nudge{display:none!important}
+.seg .lbl{font-size:12px;align-self:center;color:var(--muted)}
 .areacheck{position:absolute;left:12px;right:12px;top:48px;z-index:2;font-size:12px;font-family:var(--mono);font-variant-numeric:tabular-nums;padding:5px 10px;border-radius:8px;background:rgba(52,224,122,.18);color:#dfffe9;pointer-events:none}
 .areacheck:empty{display:none}
 .areacheck.bad{background:rgba(255,177,41,.22);color:#ffe7b8}
@@ -219,11 +226,15 @@ input[type=search]{width:100%;font:inherit;font-size:14px;padding:9px 12px;borde
   <div class="sep"></div>
   <button type="button" class="tool dA" id="m-dA" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M3 12c3-4 6 4 9 0s6 4 9 0"/></svg>明渠<br>畝立て前</button>
   <button type="button" class="tool dB" id="m-dB" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M3 12c3-4 6 4 9 0s6 4 9 0" stroke-dasharray="3 3"/></svg>明渠<br>畝立て後</button>
-  <button type="button" class="tool" id="d-done" hidden><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>線を確定</button>
+  <button type="button" class="tool" id="d-done" hidden><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>確定</button>
+  <button type="button" class="tool" id="d-undo" hidden><svg viewBox="0 0 24 24"><path d="M9 14l-4-4 4-4M5 10h10a4 4 0 0 1 0 8h-3"/></svg>一つ戻す</button>
+  <button type="button" class="tool danger" id="d-cancel" hidden><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>やめる</button>
   <div class="sep"></div>
   <button type="button" class="tool" id="m-ridge" aria-pressed="true"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h7M4 17h16"/><path d="M14 12h6" stroke-dasharray="2 2"/></svg>畝<br>オン/オフ</button>
+  <button type="button" class="tool" id="m-meas" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M3 17L17 3l4 4L7 21zM7 13l2 2M10 10l2 2M13 7l2 2"/></svg>📏 計測</button>
   <button type="button" class="tool" id="snap" aria-pressed="true" title="枠の幅をピッチで割り切れる一番近い値に自動で寄せる"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 18h16M8 6v12M16 6v12"/></svg>ピッチ<br>合わせ</button>
   <div class="sep"></div>
+  <button type="button" class="tool" id="hback" disabled><svg viewBox="0 0 24 24"><path d="M9 14l-4-4 4-4M5 10h10a4 4 0 0 1 0 8h-3"/></svg>前に戻る</button>
   <button type="button" class="tool danger" id="del" disabled><svg viewBox="0 0 24 24"><path d="M5 7h14M9 7V4h6v3M7 7l1 13h8l1-13"/></svg>選択を削除</button>
   <button type="button" class="tool danger" id="reset"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 3-6.3M4 4v5h5"/></svg>全部消す</button>
 </nav>
@@ -234,6 +245,7 @@ input[type=search]{width:100%;font:inherit;font-size:14px;padding:9px 12px;borde
     <div id="plan" class="gmap"></div>
     <div class="view"><button type="button" id="labels" aria-pressed="true">m表示</button><button type="button" id="fit-field" class="txt">圃場へ</button></div>
     <div class="savebar" id="savebar"></div>
+    <div class="nudge" id="nudge" hidden><div class="lab" id="nudge-lab">点を微調整</div><span></span><button type="button" data-dx="0" data-dy="-1">↑</button><span></span><button type="button" data-dx="-1" data-dy="0">←</button><button type="button" data-dx="0" data-dy="1">↓</button><button type="button" data-dx="1" data-dy="0">→</button><div class="stp"><button type="button" data-s="0.1" aria-pressed="true">10cm</button><button type="button" data-s="0.5">50cm</button><button type="button" data-s="1">1m</button></div></div>
     <div class="regbar2"><button type="button" id="revertBtn" disabled>元に戻す</button><button type="button" id="regBtn" disabled>設計を登録（登録済）</button></div>
   </div>
   <div class="legend">
@@ -243,6 +255,8 @@ input[type=search]{width:100%;font:inherit;font-size:14px;padding:9px 12px;borde
     <span><i style="background:var(--ditchA)"></i>明渠 畝立て前</span>
     <span><i style="background:var(--ditchB)"></i>明渠 畝立て後</span>
     <span><i style="background:var(--sel)"></i>選択中</span>
+    <span><i style="background:#fff;border:1px solid #000"></i>計測線／黄字＝外周・他のまとまりまでの距離（畝方向＝畝の端から外周、横＝畝と直角に外周まで）</span>
+    <span><i style="background:none;border-top:2px dashed #ffe14d;height:0"></i>作業線（外周からの空き。本畝はこの内側で止まる）</span>
   </div>
 </section>
 
@@ -264,9 +278,13 @@ input[type=search]{width:100%;font:inherit;font-size:14px;padding:9px 12px;borde
   <h2><b>畝のまとまり</b><span>タップで選択</span></h2>
   <div class="zlist" id="zlist"></div>
   <div id="zedit" hidden>
-    <div class="field wide" style="padding-top:10px"><div class="seg"><button type="button" id="z-rect">四角に揃える</button></div><small style="color:var(--muted);font-size:11px;margin-top:4px">3・4点を1→2辺と直角に動かす</small></div>
+    <div class="field wide" style="padding-top:10px"><div class="seg"><button type="button" id="z-rect">四角に揃える</button><button type="button" id="z-fill">空きまで広げる</button></div><small style="color:var(--muted);font-size:11px;margin-top:4px">四角：3・4点を1→2辺と直角に。広げる：3→4辺を作業線か隣のまとまりに当たるまで伸ばす</small></div>
+    <div class="field wide"><label>ピッチ合わせの向き<small>枠幅が割り切れないとき、どっちに寄せるか</small></label>
+      <div class="seg" id="snapdir"><button type="button" data-d="near" aria-pressed="true">近い方</button><button type="button" data-d="down">詰める</button><button type="button" data-d="up">広げる（+1本）</button></div></div>
     <div class="field wide"><label>畝立て機<small id="w-note"></small></label>
       <div class="seg" id="machine"><button type="button" data-m="futago">ふたごちゃん</button><button type="button" data-m="koune">こうねちゃん</button><button type="button" data-m="daichi">だい地くん</button></div></div>
+    <div class="field"><label>隣との間隔<small>一番近いまとまりとの間を、この距離に（枠ごと平行移動）</small></label><div class="in"><input type="number" id="zgap" min="0" step="0.5">m</div></div>
+    <div class="field"><label>本数<small>枠の幅をこの本数ぶんに（3→4辺を動かす）</small></label><div class="in"><input type="number" id="zn" min="1" step="1">本</div></div>
     <div class="field"><label>畝幅</label><div class="in"><input type="number" id="w" value="45" step="5">cm</div></div>
     <div class="field"><label>通路幅</label><div class="in"><input type="number" id="p" value="45" step="5">cm</div></div>
     <div class="field"><label>向き<small>1→2辺に平行。余りは3→4辺側</small></label><div class="in"><input type="number" id="zang" value="0" step="1">°</div></div>
@@ -275,7 +293,14 @@ input[type=search]{width:100%;font:inherit;font-size:14px;padding:9px 12px;borde
   <h2><b>設定</b></h2>
   <div class="field"><label>株間<small>苗本数の計算用</small></label><div class="in"><input type="number" id="sp" value="30" step="5">cm</div></div>
   <div class="field"><label>基肥<small>10aあたり</small></label><div class="in"><input type="number" id="fert" value="80" step="10">kg</div></div>
-  <div class="field"><label>明渠の幅<small>畝はこの幅ぶん切れる</small></label><div class="in"><input type="number" id="dw" value="50" step="10">cm</div></div>
+  <div class="field"><label>明渠の幅<small>溝そのものの幅（管理機の爪幅）。畝を切る幅は下の「空き」</small></label><div class="in"><input type="number" id="dw" value="35" step="5">cm</div></div>
+  <div class="field"><label>畝を切る空き<small>明渠の両側に畝端から畝端で空ける幅。溝幅＋機械の逃げ</small></label><div class="in"><input type="number" id="dg" value="55" step="5">cm</div></div>
+  <div class="field wide"><label>線の吸着基準<small>明渠・まとまりの向きを何に揃えるか。外周＝圃場の辺に平行/直角、畝＝近い畝のまとまりに平行/直角</small></label>
+    <div class="seg"><span class="lbl">畝立て前</span><button type="button" class="dref" data-k="A" data-r="edge">外周</button><button type="button" class="dref" data-k="A" data-r="zone">畝</button><span class="lbl" style="margin-left:8px">畝立て後</span><button type="button" class="dref" data-k="B" data-r="edge">外周</button><button type="button" class="dref" data-k="B" data-r="zone">畝</button></div>
+    <div class="seg" style="margin-top:4px"><span class="lbl">まとまり（1→2点目）</span><button type="button" id="zsnapBtn">外周に揃える</button></div></div>
+  <div class="field" id="ditchBox" hidden><label>選択中の明渠 <span id="ditchNo" style="font-family:var(--mono)"></span><small>この明渠だけの溝幅・畝を切る空き・種類</small></label><div class="in">溝 <input type="number" id="ditchW" step="5" min="10">cm</div><div class="in">空き <input type="number" id="ditchG" step="5" min="10">cm</div><div class="seg" style="grid-column:1/-1;margin-top:4px"><button type="button" id="ditchA">畝立て前</button><button type="button" id="ditchB">畝立て後</button><button type="button" id="ditchAll">全明渠をこの値に</button></div><div class="seg" style="grid-column:1/-1;margin-top:4px"><span class="lbl">基準</span><button type="button" id="ditchRefE">外周</button><button type="button" id="ditchRefZ">畝</button></div></div>
+  <div class="field"><label>外周からの空き<small>本畝はこの内側（黄色の点線）で止まる。枕畝はこの空きの中に立てる。辺ごとに変えるときは赤枠の辺をタップ</small></label><div class="in"><input type="number" id="setback" value="6" step="0.5" min="0">m</div></div>
+  <div class="field wide" id="edgeBox" hidden><label>選択中の辺 <span id="edgeNo" style="font-family:var(--mono)"></span>の空き<small>空欄で基本値に戻る</small></label><div class="in"><input type="number" id="edgeSb" step="0.5" min="0" placeholder="基本値">m <button type="button" id="edgeClose" style="padding:4px 10px;border-radius:6px;background:var(--panel2);color:var(--fg)">閉じる</button></div></div>
   <div class="field"><label>最短畝<small>これ未満は自動オフ。0で無効</small></label><div class="in"><input type="number" id="minlen" value="3" step="1" min="0">m</div></div>
 
   <h2><b>畝ごとの長さ</b></h2>
@@ -372,9 +397,9 @@ $('nav-design').onclick=()=>showScreen('design');
 
 async function boot(){
   try{ const d=await api('init',{}); FIELDS=d.fields; DESIGNED=d.designed||{}; SETTINGS=d.settings||{}; }catch(e){ $('lgErr').textContent=e.message; showLogin(e.message); return; }
-  if(SETTINGS['株間cm']) $('sp').value=SETTINGS['株間cm']; if(SETTINGS['基肥kg_10a']) $('fert').value=SETTINGS['基肥kg_10a']; if(SETTINGS['明渠幅cm']) $('dw').value=SETTINGS['明渠幅cm'];
+  if(SETTINGS['株間cm']) $('sp').value=SETTINGS['株間cm']; if(SETTINGS['基肥kg_10a']) $('fert').value=SETTINGS['基肥kg_10a']; if(SETTINGS['明渠幅cm']) $('dw').value=SETTINGS['明渠幅cm']; if(SETTINGS['畝を切る空きcm']) $('dg').value=SETTINGS['畝を切る空きcm']; if(SETTINGS['外周空きm']!==undefined&&SETTINGS['外周空きm']!=='') $('setback').value=SETTINGS['外周空きm'];
   renderList();
-  if(!regMap){ regMap=new google.maps.Map($('map'),mapOpts(HOME,16,true)); regOv=makeOverlay(regMap,drawReg);
+  if(!regMap){ regMap=new google.maps.Map($('map'),Object.assign(mapOpts(HOME,16,true),{scrollwheel:false})); regOv=makeOverlay(regMap,drawReg); installWheel($('map'),regMap);
     regMap.addListener('click',e=>{ if(!regSel||regDragging||!regEdit) return; if(!ORIGIN) ORIGIN={lat:e.latLng.lat(),lng:e.latLng.lng()}; pts.push(toLocal({lat:e.latLng.lat(),lng:e.latLng.lng()})); updateReg(); });
     // 外周の点をドラッグ
     attachDrag($('map'),regMap,()=>regOv,(el)=>{ if(!regEdit) return null; const p=el.closest('.rpt'); return p?{i:+p.dataset.i}:null; },(d,ll)=>{ pts[d.i]=toLocal(ll); updateReg(); },()=>{ regDragging=false; }); }
@@ -452,41 +477,86 @@ $('nav-design').onclick=()=>{ if(!confirmLeave()) return; const f=regSel&&regSel
 $('nav-view').onclick=async()=>{ if(!regSel) return; if(!confirmLeave()) return; try{ const f=await api('getField',{fieldId:regSel.id}); regSel.full=f; if(f.outline&&f.outline.length>=3) openDesign(regSel,f.outline,f.design,f.designVer||0,true); }catch(e){ alert(e.message); } };
 
 // ===== 畝立て設計 =====
-let POLY=[], zones=[], ditches=[], mode='ridge', drawPts=[], selZ=-1, selD=-1, showLabels=true, snapOn=true, locked=true, designVer=0;
-const MODES=['main','head','dA','dB','ridge'];
+let POLY=[], zones=[], ditches=[], measures=[], edgeSb={}, mode='ridge', drawPts=[], selZ=-1, selD=-1, selM=-1, selE=-1, showLabels=true, snapOn=true, locked=true, designVer=0;
+let zsnapOn=true, ditchRef={A:'edge',B:'zone'}, snapDir='near', selPt=null, nudgeStep=0.1, drawBase, curK=1;
+const MODES=['main','head','dA','dB','ridge','meas'];
 // ---- 幾何 ----
 function area(poly){ let s=0; for(let i=0;i<poly.length;i++){const [x1,y1]=poly[i],[x2,y2]=poly[(i+1)%poly.length]; s+=x1*y2-x2*y1;} return s/2; }
 function rot(poly,th){ const c=Math.cos(th),s=Math.sin(th); return poly.map(([x,y])=>[x*c-y*s,x*s+y*c]); }
 function cutsH(poly,Y){ const xs=[]; for(let i=0;i<poly.length;i++){const [x1,y1]=poly[i],[x2,y2]=poly[(i+1)%poly.length]; if((y1<=Y&&y2>Y)||(y2<=Y&&y1>Y)) xs.push(x1+(Y-y1)*(x2-x1)/(y2-y1));} xs.sort((a,b)=>a-b); const o=[]; for(let i=0;i+1<xs.length;i+=2)o.push([xs[i],xs[i+1]]); return o; }
 function intersectIv(A,B){ const o=[]; for(const [a1,a2] of A) for(const [b1,b2] of B){ const lo=Math.max(a1,b1),hi=Math.min(a2,b2); if(hi>lo) o.push([lo,hi]); } return o; }
 function segX(p1,p2,q1,q2){ const den=(p1[0]-p2[0])*(q1[1]-q2[1])-(p1[1]-p2[1])*(q1[0]-q2[0]); if(Math.abs(den)<1e-12) return null; const t=((p1[0]-q1[0])*(q1[1]-q2[1])-(p1[1]-q1[1])*(q1[0]-q2[0]))/den, u=-((p1[0]-p2[0])*(p1[1]-q1[1])-(p1[1]-p2[1])*(p1[0]-q1[0]))/den; return (t>=0&&t<=1&&u>=0&&u<=1)?{t,u}:null; }
-// 枠の幅をピッチで割り切れる一番近い値に寄せる：3・4点目を1→2辺の法線方向に動かす
+const plen=pts=>{let s=0;for(let i=1;i<pts.length;i++)s+=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);return s;};
+function nearestOnPoly(poly,p){ let best=null; for(let i=0;i<poly.length;i++){ const a=poly[i],b=poly[(i+1)%poly.length]; const dx=b[0]-a[0],dy=b[1]-a[1],L2=dx*dx+dy*dy||1e-9; let t=((p[0]-a[0])*dx+(p[1]-a[1])*dy)/L2; t=Math.max(0,Math.min(1,t)); const q=[a[0]+dx*t,a[1]+dy*t]; const d=Math.hypot(p[0]-q[0],p[1]-q[1]); if(!best||d<best.d) best={d,q}; } return best; }
+function rayPoly(p,ux,uy){ let best=null; for(let i=0;i<POLY.length;i++){ const a=POLY[i],b=POLY[(i+1)%POLY.length]; const ex=b[0]-a[0],ey=b[1]-a[1]; const den=ux*ey-uy*ex; if(Math.abs(den)<1e-9) continue; const t=((a[0]-p[0])*ey-(a[1]-p[1])*ex)/den; const sgm=((a[0]-p[0])*uy-(a[1]-p[1])*ux)/den; if(t>0.05&&sgm>=0&&sgm<=1&&(!best||t<best.t)) best={t,q:[p[0]+ux*t,p[1]+uy*t]}; } return best; }
+function segSegDist(a1,a2,b1,b2){ const x=segX(a1,a2,b1,b2); if(x){ const q=[a1[0]+(a2[0]-a1[0])*x.t,a1[1]+(a2[1]-a1[1])*x.t]; return {d:0,p:q,q}; }
+  let best=null; const chk=(p,s1,s2,flip)=>{ const r=nearestOnPoly([s1,s2,s2],p); if(!best||r.d<best.d) best=flip?{d:r.d,p:r.q,q:p}:{d:r.d,p,q:r.q}; };
+  chk(a1,b1,b2,false); chk(a2,b1,b2,false); chk(b1,a1,a2,true); chk(b2,a1,a2,true); return best; }
+// 外周からの空き：辺ごとの値（無ければ基本値）と、その内側の作業線
+function sbOf(i){ return edgeSb[i]!==undefined ? edgeSb[i] : (+$('setback').value||0); }
+function workPoly(){ const poly=POLY, n=poly.length, sgn=area(poly)>0?1:-1, lines=[];
+  for(let i=0;i<n;i++){ const p=poly[i],q=poly[(i+1)%n]; const d=sbOf(i); const L=Math.hypot(q[0]-p[0],q[1]-p[1])||1e-9; const nx=-sgn*(q[1]-p[1])/L, ny=sgn*(q[0]-p[0])/L; lines.push({x1:p[0]+nx*d,y1:p[1]+ny*d,x2:q[0]+nx*d,y2:q[1]+ny*d}); }
+  const out=[];
+  for(let i=0;i<n;i++){ const a=lines[(i-1+n)%n],b=lines[i]; const d1x=a.x2-a.x1,d1y=a.y2-a.y1,d2x=b.x2-b.x1,d2y=b.y2-b.y1; const den=d1x*d2y-d1y*d2x;
+    if(Math.abs(den)<1e-9){ out.push([b.x1,b.y1]); continue; } const t=((b.x1-a.x1)*d2y-(b.y1-a.y1)*d2x)/den; out.push([a.x1+d1x*t,a.y1+d1y*t]); }
+  return out; }
+// 枠の幅をピッチで割り切れる値に寄せる：3・4点目を1→2辺の法線方向に動かす（near=近い方 / down=詰める / up=+1本）
 function snapZone(z){
   const [p0,p1]=z.pts; const th=-(Math.atan2(p1[1]-p0[1],p1[0]-p0[0]) + z.ang*Math.PI/180);
   const Q=rot(z.pts,th); const w=z.w/100, pitch=(z.w+z.p)/100;
   const y12=(Q[0][1]+Q[1][1])/2, y34=(Q[2][1]+Q[3][1])/2; const span=Math.abs(y34-y12); if(span<w) return;
-  const n=Math.max(1,Math.round((span-w)/pitch)+1); const want=w+(n-1)*pitch; const dy=(want-span)*Math.sign(y34-y12);
+  const raw=(span-w)/pitch; const n=Math.max(1,(snapDir==='down'?Math.floor(raw+1e-6):snapDir==='up'?Math.ceil(raw-1e-6):Math.round(raw))+1); const want=w+(n-1)*pitch; const dy=(want-span)*Math.sign(y34-y12);
   Q[2][1]+=dy; Q[3][1]+=dy; const back=rot(Q,-th); z.pts[2]=back[2]; z.pts[3]=back[3];
 }
-const plen=pts=>{let s=0;for(let i=1;i<pts.length;i++)s+=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);return s;};
+function setZoneCount(z,nn){ const [p0,p1]=z.pts; const th=-(Math.atan2(p1[1]-p0[1],p1[0]-p0[0]) + z.ang*Math.PI/180); const Q=rot(z.pts,th); const w=z.w/100, pitch=(z.w+z.p)/100;
+  const y12=(Q[0][1]+Q[1][1])/2, y34=(Q[2][1]+Q[3][1])/2; const sg=Math.sign(y34-y12)||1; const want=w+(nn-1)*pitch; const dy=(y12+sg*want)-y34; Q[2][1]+=dy; Q[3][1]+=dy; z.pts=rot(Q,-th); }
+function zoneGapInfo(z,zi){ const [p0,p1]=z.pts; const th=Math.atan2(p1[1]-p0[1],p1[0]-p0[0])+z.ang*Math.PI/180; const vx=-Math.sin(th),vy=Math.cos(th);
+  const pr=q=>q[0]*vx+q[1]*vy; const vs=z.pts.map(pr); const v0=Math.min(...vs),v1=Math.max(...vs); let best=null;
+  zones.forEach((o,oi)=>{ if(oi===zi) return; const os=o.pts.map(pr); const o0=Math.min(...os),o1=Math.max(...os); let gap,side; if(o0>=v1){ gap=o0-v1; side=1; } else if(o1<=v0){ gap=v0-o1; side=-1; } else { gap=0; side=0; }
+    if(!best||gap<best.gap) best={gap,side,vx,vy}; }); return best; }
+function rectZone(z){ const [p0,p1]=z.pts; const th=-(Math.atan2(p1[1]-p0[1],p1[0]-p0[0]) + z.ang*Math.PI/180); const Q=rot(z.pts,th);
+  const y34=(Q[2][1]+Q[3][1])/2; Q[2]=[Q[1][0],y34]; Q[3]=[Q[0][0],y34]; const B=rot(Q,-th); z.pts[2]=B[2]; z.pts[3]=B[3]; }
+// 3→4辺を、作業線か他のまとまりに当たる手前まで伸ばす
+function fillZone(z){
+  const [p0,p1]=z.pts; const th=-(Math.atan2(p1[1]-p0[1],p1[0]-p0[0]) + z.ang*Math.PI/180); const Q=rot(z.pts,th);
+  const dir=Math.sign((Q[2][1]+Q[3][1])/2-(Q[0][1]+Q[1][1])/2)||1; const y12=(Q[0][1]+Q[1][1])/2;
+  const xs=[Math.min(Q[0][0],Q[1][0]),Math.max(Q[0][0],Q[1][0])];
+  const WP=rot(workPoly(),th); const others=zones.filter(o=>o!==z).map(o=>rot(o.pts,th)); let limit=Infinity;
+  const samples=[]; for(let i=0;i<=8;i++) samples.push(xs[0]+(xs[1]-xs[0])*i/8);
+  for(const sx of samples){ const hit=poly=>{ for(let i=0;i<poly.length;i++){ const a=poly[i],b=poly[(i+1)%poly.length]; if((a[0]<=sx&&b[0]>sx)||(b[0]<=sx&&a[0]>sx)){ const y=a[1]+(sx-a[0])*(b[1]-a[1])/(b[0]-a[0]); const d=(y-y12)*dir; if(d>0.05&&d<limit) limit=d; } } }; hit(WP); others.forEach(o=>hit(o)); }
+  if(!isFinite(limit)) return; const y34=y12+dir*limit; Q[2][1]=y34; Q[3][1]=y34; const back=rot(Q,-th); z.pts[2]=back[2]; z.pts[3]=back[3];
+}
+// 吸い付き：外周の角。本畝は作業線にも、枕畝は外周の線にも。他のまとまりには吸い付けへん（間隔が勝手に0になるから）
+function snapCorner(pm,kind){ const lim=10/curK; let best=null;
+  for(const c of POLY){ const d=Math.hypot(c[0]-pm[0],c[1]-pm[1]); if(d<lim&&(!best||d<best.d)) best={d,q:c}; }
+  if(best) return best.q; const line=kind==='main'?workPoly():POLY; const nn=nearestOnPoly(line,pm); if(nn&&nn.d<lim*0.85) return nn.q; return pm; }
+// 向きの吸着：外周の辺 or 近い畝のまとまり に対して平行／直角。15°以内のズレしか直さん
+function zoneAngleNear(p){ let best=null; zones.forEach(z=>{ const c=[(z.pts[0][0]+z.pts[1][0]+z.pts[2][0]+z.pts[3][0])/4,(z.pts[0][1]+z.pts[1][1]+z.pts[2][1]+z.pts[3][1])/4]; const d=Math.hypot(p[0]-c[0],p[1]-c[1]); const th=Math.atan2(z.pts[1][1]-z.pts[0][1],z.pts[1][0]-z.pts[0][0])+z.ang*Math.PI/180; if(!best||d<best.d) best={d,th}; }); return best?best.th:0; }
+function edgeAngleNear(p){ let best=null; for(let i=0;i<POLY.length;i++){ const a=POLY[i],b=POLY[(i+1)%POLY.length]; const dx=b[0]-a[0],dy=b[1]-a[1],L2=dx*dx+dy*dy||1e-9; let t=((p[0]-a[0])*dx+(p[1]-a[1])*dy)/L2; t=Math.max(0,Math.min(1,t)); const d=Math.hypot(p[0]-(a[0]+dx*t),p[1]-(a[1]+dy*t)); if(!best||d<best.d) best={d,th:Math.atan2(dy,dx),i}; } return best; }
+function refAngle(ref,p){ if(ref==='zone'&&zones.length) return zoneAngleNear(p); return edgeAngleNear(p).th; }
+function snapAngle(prev,p,th){ const dx=p[0]-prev[0],dy=p[1]-prev[1]; const L=Math.hypot(dx,dy); if(L<0.01) return p;
+  const a0=Math.atan2(dy,dx); let dev=Math.abs(((a0-th)%(Math.PI/2)+Math.PI/2)%(Math.PI/2)); dev=Math.min(dev,Math.PI/2-dev); if(dev>15*Math.PI/180) return p;
+  const cands=[th,th+Math.PI/2]; let best=null; for(const a of cands){ const ux=Math.cos(a),uy=Math.sin(a); const t=dx*ux+dy*uy; const q=[prev[0]+ux*t,prev[1]+uy*t]; const d=Math.hypot(p[0]-q[0],p[1]-q[1]); if(!best||d<best.d) best={d,q}; } return best.q; }
+function snapDitchPt(prev,p,ref){ const mid=[(prev[0]+p[0])/2,(prev[1]+p[1])/2]; return snapAngle(prev,p,refAngle(ref||'edge',mid)); }
+function resnapDitch(d){ for(let i=1;i<d.pts.length;i++) d.pts[i]=snapDitchPt(d.pts[i-1],d.pts[i],d.ref||ditchRef[d.when]); }
 
 // ---- 1つのまとまりの畝配置 ----
-function layoutZone(z, minlen, sp, dwid){
+function layoutZone(z, minlen, sp, WP, dgap){
   const [p0,p1]=z.pts; const th=-(Math.atan2(p1[1]-p0[1],p1[0]-p0[0]) + z.ang*Math.PI/180);
   const Q=rot(z.pts,th), F=rot(POLY,th); const w=z.w/100, pitch=(z.w+z.p)/100;
   const ys=Q.map(v=>v[1]); const ymin=Math.min(...ys), ymax=Math.max(...ys);
-  // 1本目は「1→2の辺」に接して立て、余りは反対側（3→4の辺側）に出す。1→2辺が上下どちらかで並べる向きを決める
   const fromTop = Q[0][1] <= (ymin+ymax)/2;
   const span=ymax-ymin; const n=Math.max(0,Math.floor((span-w)/pitch+1e-9)+1); const rest=span-(w+(n-1)*pitch);
   const back=pt=>rot([pt],-th)[0];
+  const clipTo = (WP && z.kind==='main') ? rot(WP,th) : F; // 本畝は作業線で止める。枕畝は空きの中に立てるものやから外周まで
   const ridges=[]; let col=0,no=0;
   for(let ci=0; ci<n; ci++){ const Y = fromTop ? ymin+w/2+ci*pitch : ymax-w/2-ci*pitch;
     col++;
-    for(const [a,b] of intersectIv(cutsH(Q,Y),cutsH(F,Y))){
+    for(const [a,b] of intersectIv(cutsH(Q,Y),cutsH(clipTo,Y))){
       const len=b-a; if(len<=0.05) continue;
       const P1=back([a,Y]),P2=back([b,Y]); const cuts=[];
       for(const d of ditches){ for(let i=0;i+1<d.pts.length;i++){ const x=segX(P1,P2,d.pts[i],d.pts[i+1]); if(!x) continue;
-        const ux=(P2[0]-P1[0])/len,uy=(P2[1]-P1[1])/len; const dx=d.pts[i+1][0]-d.pts[i][0],dy=d.pts[i+1][1]-d.pts[i][1]; const dl=Math.hypot(dx,dy)||1e-9; const sin=Math.abs(ux*dy/dl-uy*dx/dl); const half=Math.min(len,(dwid/2)/Math.max(sin,0.2)); cuts.push([x.t*len-half,x.t*len+half]); } }
+        const ux=(P2[0]-P1[0])/len,uy=(P2[1]-P1[1])/len; const dx=d.pts[i+1][0]-d.pts[i][0],dy=d.pts[i+1][1]-d.pts[i][1]; const dl=Math.hypot(dx,dy)||1e-9; const sin=Math.abs(ux*dy/dl-uy*dx/dl); const dwd=(d.g!==undefined?d.g/100:dgap); const half=Math.min(len,(dwd/2)/Math.max(sin,0.2)); cuts.push([x.t*len-half,x.t*len+half]); } }
       cuts.sort((p,q)=>p[0]-q[0]); const pieces=[]; let cur=0;
       for(const [c1,c2] of cuts){ if(c1>cur) pieces.push([cur,Math.min(c1,len)]); cur=Math.max(cur,c2); } if(cur<len) pieces.push([cur,len]);
       const auto=minlen<=0||len>=minlen, ok=auto&&!z.off.has(col);
@@ -496,91 +566,153 @@ function layoutZone(z, minlen, sp, dwid){
   return {ridges,pitch,w,rest,n};
 }
 
-
-
-function rectZone(z){ const [p0,p1]=z.pts; const th=-(Math.atan2(p1[1]-p0[1],p1[0]-p0[0]) + z.ang*Math.PI/180); const Q=rot(z.pts,th);
-  const y34=(Q[2][1]+Q[3][1])/2; Q[2]=[Q[1][0],y34]; Q[3]=[Q[0][0],y34]; const B=rot(Q,-th); z.pts[2]=B[2]; z.pts[3]=B[3]; }
-
 function openDesign(field, outline, design, ver, view){
   viewOnly=!!view;
   regSel=field; designFieldId=field.id; ORIGIN=centroidLL(outline); POLY=outline.map(p=>toLocal({lat:p[0],lng:p[1]}));
   designVer=ver||0; lastSaved=design?JSON.parse(JSON.stringify(design)):null; dirty=false; loadDesignInto(design);
-  locked=viewOnly||!!(design&&design.zones&&design.zones.length); drawPts=[]; selZ=selD=-1; mode=locked?'ridge':'main';
+  locked=viewOnly||!!(design&&design.zones&&design.zones.length); drawPts=[]; selZ=selD=selM=selE=-1; selPt=null; mode=locked?'ridge':'main';
+  hist=[]; histFid=field.id;
   $('nav-design').disabled=false; $('nav-view').disabled=false; showScreen('design');
-  if(!planMap){ planMap=new google.maps.Map($('plan'),mapOpts(ORIGIN,18,true)); planOv=makeOverlay(planMap,drawPlan);
-    planMap.addListener('click',e=>{ if(planDragging) return; const pm=toLocal({lat:e.latLng.lat(),lng:e.latLng.lng()}); onMapTap(pm,null); });
-    attachDrag($('plan'),planMap,()=>planOv,(el)=>{ if(locked) return null; const z=el.closest('.zpt'), d=el.closest('.dpt'); if(z) return {type:'z',z:+z.dataset.z,i:+z.dataset.i}; if(d) return {type:'d',d:+d.dataset.d,i:+d.dataset.i}; return null; },
-      (dr,ll)=>{ planDragging=true; const pm=toLocal(ll); if(dr.type==='z'){ zones[dr.z].pts[dr.i]=pm; selZ=dr.z; selD=-1; } else { ditches[dr.d].pts[dr.i]=pm; selD=dr.d; selZ=-1; } render(false); },
-      ()=>{ planDragging=false; if(selZ>=0&&snapOn) snapZone(zones[selZ]); render(); });
+  if(!planMap){ planMap=new google.maps.Map($('plan'),Object.assign(mapOpts(ORIGIN,18,true),{scrollwheel:false})); planOv=makeOverlay(planMap,drawPlan);
+    planMap.addListener('click',e=>{ if(planDragging) return; const pm=toLocal({lat:e.latLng.lat(),lng:e.latLng.lng()}); onMapTap(pm); });
+    attachDrag($('plan'),planMap,()=>planOv,planHit,planMove,planEnd);
+    installWheel($('plan'),planMap);
     $('fit-field').onclick=fitField;
   } else { planMap.setCenter(ORIGIN); }
   fitField(); render(false);
 }
-let planDragging=false, hitAt=0, designFieldId=null;
+// トラックパッド：2本指スクロール＝移動、ピンチ（ctrl/⌘＋スクロール）＝拡大
+function installWheel(div,map){ div.addEventListener('wheel',e=>{ e.preventDefault(); if(e.ctrlKey||e.metaKey){ map.setZoom(Math.max(10,Math.min(22,map.getZoom()-e.deltaY*0.01))); } else map.panBy(e.deltaX,e.deltaY); },{passive:false}); }
+let planDragging=false, hitAt=0, designFieldId=null, lastTapAt=0, lastTapPm=null, dragging=false, hist=[], histFid=null;
 document.addEventListener('pointerdown',e=>{ const t=e.target; if(t instanceof Element && t.closest('#plan') && t.closest('.hit')) hitAt=Date.now(); },true);
 function fitField(){ const b=new google.maps.LatLngBounds(); POLY.forEach(p=>b.extend(toLatLng(p))); planMap.fitBounds(b,40); }
-function onMapTap(pm,target){
-  if((locked||mode==='ridge') && Date.now()-hitAt<500) return; // SVGの図形を押したタップ（選択・オンオフ）はそっちで処理済み
-  if(locked){ selZ=selD=-1; return render(false); }
-  if(mode==='main'||mode==='head'){ drawPts.push(pm); if(drawPts.length===4){ const nz={kind:mode,pts:drawPts,machine:'futago',w:45,p:45,ang:0,off:new Set()}; if(snapOn) snapZone(nz); zones.push(nz); selZ=zones.length-1; selD=-1; drawPts=[]; mode='ridge'; } return render(); }
-  if(mode==='dA'||mode==='dB'){ drawPts.push(pm); return render(false); }
-  selZ=selD=-1; render(false);
+// ドラッグ：点（zpt/dpt）、または選択中のまとまりの中（丸ごと移動）
+function planHit(el){ if(locked) return null; const z=el.closest('.zpt'), d=el.closest('.dpt');
+  if(z){ const h={type:'z',z:+z.dataset.z,i:+z.dataset.i}; selPt={...h}; if(selZ!==h.z){ selZ=h.z; selD=selM=-1; } render(false); return h; }
+  if(d){ const h={type:'d',d:+d.dataset.d,i:+d.dataset.i}; selPt={...h}; if(selD!==h.d){ selD=h.d; selZ=selM=-1; } render(false); return h; }
+  if(mode==='ridge'&&selZ>=0){ const zh=el.closest('.zone-hit,.ridge-hit'); const zi=zh?+(zh.dataset.i!==undefined?zh.dataset.i:zh.dataset.z):-1; if(zi===selZ) return {type:'m',z:zi,orig:zones[zi].pts.map(q=>q.slice())}; }
+  return null; }
+function planMove(dr,ll){ let pm=toLocal(ll);
+  if(dr.type==='m'){ if(!dr.start){ dr.start=pm; return; } const dx=pm[0]-dr.start[0],dy=pm[1]-dr.start[1]; if(!planDragging&&Math.hypot(dx,dy)*curK<4) return; planDragging=true; dragging=true; zones[dr.z].pts=dr.orig.map(q=>[q[0]+dx,q[1]+dy]); return render(false); }
+  planDragging=true; dragging=true;
+  if(dr.type==='z'){ pm=snapCorner(pm,zones[dr.z].kind); zones[dr.z].pts[dr.i]=pm; } else { const d=ditches[dr.d]; const nb=dr.i>0?d.pts[dr.i-1]:d.pts[1]; if(nb) pm=snapDitchPt(nb,pm,d.ref||ditchRef[d.when]); d.pts[dr.i]=pm; }
+  render(false); }
+function planEnd(){ const moved=planDragging; planDragging=false; dragging=false; if(moved){ if(selZ>=0&&snapOn&&selPt&&selPt.type==='z') snapZone(zones[selZ]); render(); } }
+function addPt(pm){
+  if(mode==='main'||mode==='head'){ const sc=snapCorner(pm,mode); const onEdge=sc!==pm; pm=sc;
+    if(drawPts.length===1&&zsnapOn&&!onEdge){ const ea=edgeAngleNear(pm); pm=snapAngle(drawPts[0],pm,ea.th); drawBase=ea.i; } if(drawPts.length===0) drawBase=undefined; }
+  if((mode==='dA'||mode==='dB')&&drawPts.length) pm=snapDitchPt(drawPts[drawPts.length-1],pm,ditchRef[mode==='dA'?'A':'B']);
+  drawPts.push(pm);
+  if(mode==='meas'&&drawPts.length>2) drawPts=[drawPts[drawPts.length-1]];
+  if((mode==='main'||mode==='head')&&drawPts.length===4){ const nz={kind:mode,pts:drawPts,machine:'futago',w:45,p:45,ang:0,off:new Set(),baseEdge:drawBase}; if(snapOn) snapZone(nz); zones.push(nz); selZ=zones.length-1; selD=selM=-1; drawPts=[]; mode='ridge'; return render(); }
+  render(false); }
+function onMapTap(pm){
+  if(Date.now()-lastTapAt<300&&lastTapPm&&Math.hypot(pm[0]-lastTapPm[0],pm[1]-lastTapPm[1])<0.05) return; lastTapAt=Date.now(); lastTapPm=pm; // 同じ場所の二重クリック（SVG＋マップ）だけ捨てる
+  if((locked||mode==='ridge') && Date.now()-hitAt<500) return; // SVGの図形を押したタップは document の click で処理済み
+  if(locked){ selZ=selD=selM=-1; return render(false); }
+  if(mode!=='ridge') return addPt(pm);
+  selZ=selD=selM=selE=-1; selPt=null; render(false);
 }
 // SVG要素のタップ（マップのclickより先に捕まえる）
 document.addEventListener('click',e=>{ const t=e.target; if(!(t instanceof Element)||!t.closest('#plan')) return; if(planDragging) return;
-  if(locked){ const z=t.closest('.zone-hit'), d=t.closest('.ditch-hit'); if(z||d){ selZ=z?+z.dataset.i:-1; selD=d?+d.dataset.i:-1; render(false); e.stopPropagation(); } return; }
-  if(mode!=='ridge') return; // 描画中はマップclickに任せる
-  const r=t.closest('.ridge-hit'); if(r){ const zz=zones[+r.dataset.z]; const c=+r.dataset.col; zz.off.has(c)?zz.off.delete(c):zz.off.add(c); selZ=+r.dataset.z; selD=-1; render(); e.stopPropagation(); return; }
-  const z=t.closest('.zone-hit'); if(z){ selZ=+z.dataset.i; selD=-1; render(false); e.stopPropagation(); return; }
-  const d=t.closest('.ditch-hit'); if(d){ selD=+d.dataset.i; selZ=-1; render(false); e.stopPropagation(); return; }
+  if(locked){ const z=t.closest('.zone-hit'), d=t.closest('.ditch-hit'); if(z||d){ selZ=z?+z.dataset.i:-1; selD=d?+d.dataset.i:-1; selM=-1; render(false); e.stopPropagation(); } return; }
+  if(mode!=='ridge'){ // 描画中：図形の上でも点を打てるように、ここで座標を出す
+    if(t.closest('.hit')){ const ll=pixelToLatLng(planMap,planOv,$('plan'),e); if(ll){ const pm=toLocal(ll); lastTapAt=Date.now(); lastTapPm=pm; addPt(pm); e.stopPropagation(); } } return; }
+  if(t.closest('.zpt,.dpt')){ e.stopPropagation(); return; }
+  const r=t.closest('.ridge-hit'); if(r){ const zz=zones[+r.dataset.z]; const c=+r.dataset.col; zz.off.has(c)?zz.off.delete(c):zz.off.add(c); selZ=+r.dataset.z; selD=selM=-1; render(); e.stopPropagation(); return; }
+  const z=t.closest('.zone-hit'); if(z){ selZ=+z.dataset.i; selD=selM=-1; render(false); e.stopPropagation(); return; }
+  const d=t.closest('.ditch-hit'); if(d){ selD=+d.dataset.i; selZ=selM=-1; render(false); e.stopPropagation(); return; }
+  const mh=t.closest('.meas-hit'); if(mh){ selM=+mh.dataset.i; selZ=selD=-1; render(false); e.stopPropagation(); return; }
+  const eh=t.closest('.edge-hit'); if(eh){ selE=+eh.dataset.i; render(false); e.stopPropagation(); return; }
 },true);
 
-['sp','fert','dw','minlen'].forEach(id=>$(id).addEventListener('input',()=>render(false)));
+// ---- 右パネル・道具 ----
+['sp','fert','dw','dg','minlen','setback'].forEach(id=>$(id).addEventListener('input',()=>render()));
 ['w','p','zang'].forEach(id=>$(id).addEventListener('input',()=>{ const z=zones[selZ]; if(!z) return; z.w=+$('w').value; z.p=+$('p').value; z.ang=+$('zang').value; if(snapOn) snapZone(z); render(); }));
-$('regBtn').onclick=doSave; $('revertBtn').onclick=revertDesign;
-$('lock').onclick=()=>{ if(viewOnly) return; locked=!locked; drawPts=[]; mode='ridge'; render(false); };
+$('zgap').addEventListener('change',()=>{ const z=zones[selZ]; if(!z) return; const g=zoneGapInfo(z,selZ); if(!g||!g.side) return; const want=Math.max(0,+$('zgap').value||0); const sh=(g.gap-want)*g.side; z.pts=z.pts.map(q=>[q[0]+sh*g.vx,q[1]+sh*g.vy]); render(); });
+$('zn').addEventListener('change',()=>{ const z=zones[selZ]; if(!z) return; const nn=Math.max(1,Math.round(+$('zn').value||1)); setZoneCount(z,nn); render(); });
+$('edgeSb').addEventListener('input',()=>{ if(selE<0) return; const v=$('edgeSb').value; if(v==='') delete edgeSb[selE]; else edgeSb[selE]=Math.max(0,+v); render(); });
+$('edgeClose').onclick=()=>{ selE=-1; render(false); };
+$('ditchW').addEventListener('input',()=>{ const d=ditches[selD]; if(!d) return; d.w=Math.max(10,+$('ditchW').value||35); render(); });
+$('ditchG').addEventListener('input',()=>{ const d=ditches[selD]; if(!d) return; d.g=Math.max(10,+$('ditchG').value||55); render(); });
+$('ditchA').onclick=()=>{ const d=ditches[selD]; if(d){ d.when='A'; render(); } };
+$('ditchB').onclick=()=>{ const d=ditches[selD]; if(d){ d.when='B'; render(); } };
+$('ditchAll').onclick=()=>{ const d=ditches[selD]; if(!d) return; ditches.forEach(x=>{ x.w=d.w; x.g=d.g; }); render(); };
+$('ditchRefE').onclick=()=>{ const d=ditches[selD]; if(d){ d.ref='edge'; resnapDitch(d); render(); } };
+$('ditchRefZ').onclick=()=>{ const d=ditches[selD]; if(d){ d.ref='zone'; resnapDitch(d); render(); } };
+function paintRef(){ document.querySelectorAll('.dref').forEach(b=>b.setAttribute('aria-pressed',ditchRef[b.dataset.k]===b.dataset.r)); $('zsnapBtn').setAttribute('aria-pressed',zsnapOn); }
+document.querySelectorAll('.dref').forEach(b=>b.onclick=()=>{ ditchRef[b.dataset.k]=b.dataset.r; paintRef(); render(); });
+$('zsnapBtn').onclick=()=>{ zsnapOn=!zsnapOn; paintRef(); render(); };
+document.querySelectorAll('#snapdir button').forEach(b=>b.onclick=()=>{ snapDir=b.dataset.d; document.querySelectorAll('#snapdir button').forEach(x=>x.setAttribute('aria-pressed',x===b)); const z=zones[selZ]; if(z&&snapOn) snapZone(z); render(); });
+$('z-fill').onclick=()=>{ const z=zones[selZ]; if(!z) return; fillZone(z); if(snapOn){ const keep=snapDir; snapDir='down'; snapZone(z); snapDir=keep; } render(); };
 $('z-rect').onclick=()=>{ const z=zones[selZ]; if(!z) return; rectZone(z); if(snapOn) snapZone(z); render(); };
 $('snap').onclick=()=>{ snapOn=!snapOn; if(snapOn) zones.forEach(snapZone); render(); };
 document.querySelectorAll('#machine button').forEach(b=>b.onclick=()=>{ const z=zones[selZ]; if(!z) return; z.machine=b.dataset.m; const m=MACHINES[z.machine]; z.w=m.w; z.p=m.p; if(snapOn) snapZone(z); render(); });
 MODES.forEach(k=>$('m-'+k).onclick=()=>{ mode=k; drawPts=[]; render(false); });
-$('d-done').onclick=()=>{ if(drawPts.length>=2){ ditches.push({when:mode==='dA'?'A':'B',pts:drawPts}); selD=ditches.length-1; selZ=-1; } drawPts=[]; mode='ridge'; render(); };
+$('d-done').onclick=()=>{
+  if(mode==='meas'){ if(drawPts.length===2){ measures.push({a:drawPts[0],b:drawPts[1]}); selM=measures.length-1; selZ=selD=-1; } drawPts=[]; return render(); }
+  if(drawPts.length>=2){ ditches.push({when:mode==='dA'?'A':'B',pts:drawPts,w:+$('dw').value,g:+$('dg').value,ref:ditchRef[mode==='dA'?'A':'B']}); selD=ditches.length-1; selZ=selM=-1; } drawPts=[]; mode='ridge'; render(); };
+$('d-undo').onclick=()=>{ drawPts.pop(); render(false); };
+$('d-cancel').onclick=()=>{ drawPts=[]; mode='ridge'; render(false); };
 $('labels').onclick=()=>{ showLabels=!showLabels; render(false); };
-$('del').onclick=()=>{ if(selZ>=0) zones.splice(selZ,1); else if(selD>=0) ditches.splice(selD,1); selZ=selD=-1; render(); };
-$('reset').onclick=()=>{ if(!confirm('この圃場の設計を全部消しますか？')) return; zones=[]; ditches=[]; drawPts=[]; selZ=selD=-1; mode='ridge'; render(); };
+$('del').onclick=()=>{ if(selZ>=0) zones.splice(selZ,1); else if(selD>=0) ditches.splice(selD,1); else if(selM>=0) measures.splice(selM,1); selZ=selD=selM=-1; selPt=null; render(); };
+$('reset').onclick=()=>{ if(!confirm('この圃場の設計を全部消しますか？')) return; zones=[]; ditches=[]; measures=[]; drawPts=[]; selZ=selD=selM=-1; selPt=null; mode='ridge'; render(); };
+$('lock').onclick=()=>{ if(viewOnly) return; locked=!locked; drawPts=[]; mode='ridge'; selPt=null; render(false); };
+$('regBtn').onclick=doSave; $('revertBtn').onclick=revertDesign;
+// 前に戻る（1手ずつ。ドラッグは離した時点で1手）
+$('hback').onclick=()=>{ if(hist.length<2) return; hist.pop(); applyDesign(JSON.parse(hist[hist.length-1])); selZ=selD=selM=-1; selPt=null; drawPts=[]; mode='ridge'; render(true,true); };
+// 点の微調整パッド
+function nudgeTarget(){ if(!selPt) return null; if(selPt.type==='z'){ const z=zones[selPt.z]; return z&&z.pts[selPt.i]?{arr:z.pts,i:selPt.i}:null; } const d=ditches[selPt.d]; return d&&d.pts[selPt.i]?{arr:d.pts,i:selPt.i}:null; }
+function paintNudge(){ const t=nudgeTarget(); $('nudge').hidden=locked||!t; if(t){ const p=t.arr[t.i]; const n=nearestOnPoly(POLY,p); $('nudge-lab').innerHTML=(selPt.type==='z'?'まとまり':'明渠')+' 点'+(t.i+1)+'<br>外周まで '+(n?n.d.toFixed(2):'-')+'m'; } }
+document.querySelectorAll('#nudge button[data-dx]').forEach(b=>b.onclick=()=>{ const t=nudgeTarget(); if(!t) return; const p=t.arr[t.i]; t.arr[t.i]=[p[0]+(+b.dataset.dx)*nudgeStep,p[1]+(+b.dataset.dy)*nudgeStep]; render(); });
+document.querySelectorAll('#nudge .stp button').forEach(b=>b.onclick=()=>{ nudgeStep=+b.dataset.s; document.querySelectorAll('#nudge .stp button').forEach(x=>x.setAttribute('aria-pressed',x===b)); });
 
-// ===== 保存（変更のたびに1.5秒後にまとめて保存）=====
-// 設計は「設計を登録」を押したときだけ保存する。触っただけでは本番は変わらない
+// ===== 保存：「設計を登録」を押したときだけシートへ =====
 let saving=false, dirty=false, lastSaved=null;
-function serDesign(){ return {zones:zones.map(z=>({...z,off:[...z.off]})),ditches,snapOn,origin:ORIGIN,savedAt:new Date().toISOString()}; }
+function serDesign(){ return {zones:zones.map(z=>({...z,off:[...z.off]})),ditches,measures,edgeSb,setback:+$('setback').value,snapDir,snapOn,zsnapOn,ditchRef,dw:+$('dw').value,dg:+$('dg').value,origin:ORIGIN,savedAt:new Date().toISOString()}; }
+function applyDesign(d){ zones=[]; ditches=[]; measures=[]; edgeSb={}; if(!d) return;
+  if(d.zones) zones=d.zones.map(z=>({...z,off:new Set(z.off||[])})); ditches=(d.ditches||[]).map(x=>({...x,pts:x.pts.map(p=>p.slice())})); measures=(d.measures||[]).map(m=>({a:m.a.slice(),b:m.b.slice()})); edgeSb=Object.assign({},d.edgeSb||{});
+  if(d.setback!==undefined) $('setback').value=d.setback; if(d.snapDir) snapDir=d.snapDir; if(d.snapOn!==undefined) snapOn=!!d.snapOn; if(d.zsnapOn!==undefined) zsnapOn=!!d.zsnapOn; if(d.ditchRef) ditchRef=Object.assign({},d.ditchRef); if(d.dw!==undefined) $('dw').value=d.dw; if(d.dg!==undefined) $('dg').value=d.dg;
+  document.querySelectorAll('#snapdir button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.d===snapDir)); paintRef(); }
+function loadDesignInto(design){ applyDesign(design); }
 function queueSave(){ dirty=true; updateSaveUI(); }
 function updateSaveUI(){ const b=$('regBtn'), r=$('revertBtn'); if(!b) return; b.disabled=saving||!dirty; r.disabled=saving||!dirty; b.classList.toggle('dirty',dirty); b.textContent=saving?'登録中…':dirty?'設計を登録（未登録の変更あり）':'設計を登録（登録済）'; }
 async function doSave(){ if(saving||!regSel) return; saving=true; updateSaveUI();
   try{ const d=serDesign(); const r=await api('saveDesign',{fieldId:regSel.id,design:d,baseVer:designVer}); designVer=r.ver; DESIGNED[regSel.id]=new Date().toISOString(); lastSaved=JSON.parse(JSON.stringify(d)); if(regSel.full) { regSel.full.design=lastSaved; regSel.full.designVer=designVer; } dirty=false; $('savebar').textContent='登録済 '+new Date().toTimeString().slice(0,5); $('savebar').className='savebar'; }
   catch(e){ alert('登録できませんでした：'+e.message); }
   finally{ saving=false; updateSaveUI(); } }
-function revertDesign(){ if(!dirty) return; if(!confirm('登録していない変更を捨てて、最後に登録した状態に戻しますか？')) return; loadDesignInto(lastSaved); dirty=false; drawPts=[]; selZ=selD=-1; mode='ridge'; render(false); updateSaveUI(); }
-function loadDesignInto(design){ zones=[]; ditches=[]; if(design&&design.zones){ zones=design.zones.map(z=>({...z,off:new Set(z.off||[])})); ditches=(design.ditches||[]).map(d=>({...d,pts:d.pts.map(p=>p.slice())})); if(design.snapOn!==undefined) snapOn=!!design.snapOn; } }
+function revertDesign(){ if(!dirty) return; if(!confirm('登録していない変更を捨てて、最後に登録した状態に戻しますか？')) return; loadDesignInto(lastSaved); dirty=false; drawPts=[]; selZ=selD=selM=-1; selPt=null; mode='ridge'; render(false); updateSaveUI(); }
 function confirmLeave(){ return !dirty || confirm('登録していない変更があります。登録せずに離れますか？'); }
 window.addEventListener('beforeunload',e=>{ if(dirty||saving){ e.preventDefault(); e.returnValue=''; } });
 
 // ===== 描画 =====
-let lays=[];
-function render(save){
+let lays=[], WPcur=[];
+const MN={futago:'ふたごちゃん',koune:'こうねちゃん',daichi:'だい地くん'};
+function render(save,fromUndo){
   if(save!==false&&!viewOnly) queueSave(); else updateSaveUI();
-  const minlen=+$('minlen').value, sp=+$('sp').value/100, fertRate=+$('fert').value, dwid=+$('dw').value/100;
+  const minlen=+$('minlen').value, sp=+$('sp').value/100, fertRate=+$('fert').value, dgap=+$('dg').value/100;
   const z=zones[selZ];
   $('zedit').hidden=!z;
-  if(z){ document.querySelectorAll('#machine button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===z.machine)); const m=MACHINES[z.machine]||MACHINES.futago; $('w').value=z.w; $('p').value=z.p; $('w').disabled=$('p').disabled=m.lock||locked; $('w-note').textContent=m.note; $('zang').value=z.ang; $('zang').disabled=locked; }
+  if(selPt&&((selPt.type==='z'&&selPt.z!==selZ)||(selPt.type==='d'&&selPt.d!==selD))) selPt=null; paintNudge();
+  $('ditchBox').hidden=selD<0; if(selD>=0){ const d=ditches[selD]; $('ditchNo').textContent='#'+(selD+1); $('ditchW').value=d.w!==undefined?d.w:+$('dw').value; $('ditchG').value=d.g!==undefined?d.g:+$('dg').value; $('ditchA').setAttribute('aria-pressed',d.when==='A'); $('ditchB').setAttribute('aria-pressed',d.when==='B'); const rf=d.ref||ditchRef[d.when]; $('ditchRefE').setAttribute('aria-pressed',rf==='edge'); $('ditchRefZ').setAttribute('aria-pressed',rf==='zone'); }
+  $('edgeBox').hidden=selE<0; if(selE>=0){ $('edgeNo').textContent='#'+(selE+1); $('edgeSb').value=edgeSb[selE]!==undefined?edgeSb[selE]:''; $('edgeSb').placeholder='基本値 '+(+$('setback').value||0); }
+  if(z){ document.querySelectorAll('#machine button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===z.machine)); const m=MACHINES[z.machine]||MACHINES.futago; $('w').value=z.w; $('p').value=z.p; $('w').disabled=$('p').disabled=m.lock||locked; $('w-note').textContent=m.note; $('zang').value=z.ang; }
   $('lock').setAttribute('aria-pressed',locked); $('lock').textContent=locked?'🔒 ロック中':'🔓 編集中';
-  ['m-main','m-head','m-dA','m-dB','m-ridge','snap','reset'].forEach(id=>{ $(id).disabled=locked; }); $('z-rect').disabled=locked;
-  $('del').disabled=locked||!(selZ>=0||selD>=0);
+  ['m-main','m-head','m-dA','m-dB','m-ridge','m-meas','snap','reset','z-rect','z-fill','zgap','zn','zang','setback','edgeSb','ditchW','ditchG','ditchA','ditchB','ditchAll','ditchRefE','ditchRefZ','zsnapBtn','dw','dg','minlen'].forEach(id=>{ $(id).disabled=locked; });
+  document.querySelectorAll('#snapdir button,#machine button,.dref').forEach(b=>b.disabled=locked);
+  $('del').disabled=locked||!(selZ>=0||selD>=0||selM>=0);
   MODES.forEach(k=>$('m-'+k).setAttribute('aria-pressed',mode===k)); $('snap').setAttribute('aria-pressed',snapOn);
-  $('d-done').hidden=!(mode==='dA'||mode==='dB'); $('d-done').disabled=drawPts.length<2;
+  const drawing=(mode!=='ridge');
+  $('d-done').hidden=!(mode==='dA'||mode==='dB'||mode==='meas'); $('d-done').disabled=drawPts.length<2;
+  $('d-undo').hidden=!drawing; $('d-undo').disabled=!drawPts.length; $('d-cancel').hidden=!drawing;
   $('labels').setAttribute('aria-pressed',showLabels);
-  $('hint').textContent= mode==='main'||mode==='head' ? `${mode==='main'?'本畝':'枕畝'}：角を4つ順にタップ（${drawPts.length}/4）。1→2の向きに畝が走る。`
-    : mode==='dA'||mode==='dB' ? `明渠（畝立て${mode==='dA'?'前':'後'}）：線を順にタップして、左の「線を確定」（${drawPts.length}点）。`
-    : viewOnly ? '設計図（閲覧）。ドラッグで移動、ピンチ／ホイールで拡大。まとまりをタップで本数を確認。直すときは上の「設計する」。' : locked ? 'ロック中。図形は動かない。ドラッグで移動、ピンチ／ホイールで拡大。直すときは上の🔒を押す。' : '編集中。畝タップでオン／オフ、点はドラッグ。終わったら上の🔓でロック。';
-  lays=zones.map(zz=>layoutZone(zz,minlen,sp,dwid));
+  $('hint').textContent= mode==='main'||mode==='head' ? `${mode==='main'?'本畝':'枕畝'}：角を4つ順にタップ（${drawPts.length}/4）。1→2の向きに畝が走る${zsnapOn?'（外周の辺に平行/直角で揃う）':''}。`
+    : mode==='meas' ? `計測：2点をタップ→左の「確定」で残す（${Math.min(drawPts.length,2)}/2）。消すときは線を選んで「選択を削除」。`
+    : mode==='dA'||mode==='dB' ? `明渠（畝立て${mode==='dA'?'前':'後'}）：線を順にタップして、左の「確定」（${drawPts.length}点）。2点目からは${ditchRef[mode==='dA'?'A':'B']==='edge'?'外周の辺':'近い畝'}に平行／直角にそろう。`
+    : viewOnly ? '設計図（閲覧）。ドラッグで移動、ピンチで拡大。まとまりをタップで本数と距離を確認。直すときは上の「設計する」。' : locked ? 'ロック中。図形は動かない。ドラッグで移動、ピンチで拡大。直すときは上の🔒を押す。' : '編集中。畝タップでオン／オフ、点はドラッグ（左下のパッドで10cm刻み）。選択中のまとまりは中をドラッグで丸ごと移動。終わったら上の🔓でロック。';
+  WPcur=workPoly(); lays=zones.map(zz=>layoutZone(zz,minlen,sp,WPcur,dgap));
+  if(document.activeElement!==$('zn')){ const L=lays[selZ]; $('zn').value=L?L.n:''; }
+  if(selZ>=0&&document.activeElement!==$('zgap')){ const g=zoneGapInfo(zones[selZ],selZ); $('zgap').value=g&&g.side?g.gap.toFixed(1):''; $('zgap').disabled=locked||!(g&&g.side); }
   let nM=0,lenM=0,nH=0,lenH=0,plants=0,pieces=0,skipped=0,manualOff=0;
   lays.forEach((L,i)=>{ const kind=zones[i].kind; for(const r of L.ridges){ if(r.ok){ if(kind==='main') nM++; else nH++; for(const pc of r.pieces){ if(kind==='main') lenM+=pc.len; else lenH+=pc.len; plants+=pc.plants; pieces++; } } else if(!r.auto) skipped++; else manualOff++; } });
   const dTotal=ditches.reduce((s,d)=>s+plen(d.pts),0); const A=Math.abs(area(POLY));
@@ -588,47 +720,72 @@ function render(save){
   $('s-hn').textContent=nH; $('s-hlen').textContent=Math.round(lenH).toLocaleString(); $('s-ditch').textContent=Math.round(dTotal).toLocaleString();
   $('s-mulch').textContent=Math.ceil((lenM+lenH+pieces*2)/(+SETTINGS['マルチ巻m']||200)); $('s-plants').textContent=plants.toLocaleString(); $('s-fert').textContent=Math.round(A/1000*fertRate);
   $('skipnote').textContent=(skipped?`最短畝未満で自動オフ ${skipped}本。`:'')+(manualOff?`手動オフ ${manualOff}本。`:'')+'マルチは区間ごとに両端1m余裕込み。';
-  const MN={futago:'ふたごちゃん',koune:'こうねちゃん',daichi:'だい地くん'};
   $('zlist').innerHTML=zones.map((zz,i)=>{ const L=lays[i]; const ok=L.ridges.filter(r=>r.ok); const ls=ok.map(r=>r.len); const mn=ls.length?Math.min(...ls):0,mx=ls.length?Math.max(...ls):0;
     return `<div class="zrow" data-i="${i}" aria-pressed="${i===selZ}"><span class="sw" style="background:var(--${zz.kind})"></span><span>${zz.kind==='main'?'本畝':'枕畝'} ${i+1}　<b>${ok.length}本</b><br><small>${MN[zz.machine]||''} ${zz.w}/${zz.p}　余り ${Math.round(Math.abs(L.rest)*100)}cm</small></span><span class="m">${mn.toFixed(0)}〜${mx.toFixed(0)}m</span></div>`; }).join('') || '<p class="skip-note">まだない。🔓にして、左の「本畝」「枕畝」を押し、図の上で4つの角をタップ。</p>';
-  $('zlist').querySelectorAll('.zrow').forEach(el=>el.onclick=()=>{ selZ=+el.dataset.i; selD=-1; render(false); });
+  $('zlist').querySelectorAll('.zrow').forEach(el=>el.onclick=()=>{ selZ=+el.dataset.i; selD=selM=-1; render(false); });
   let html='';
   zones.forEach((zz,i)=>{ const L=lays[i]; html+=`<tr class="z"><td colspan="3">${zz.kind==='main'?'本畝':'枕畝'} ${i+1}（${MN[zz.machine]||''} ${zz.w}/${zz.p}）</td></tr>`;
     html+=L.ridges.map(r=>r.pieces.map((pc,pi)=>`<tr class="${r.ok?'':'skip'}"><td>${r.ok?(r.no+(r.pieces.length>1?'-'+(pi+1):'')):(r.auto?'オフ':'短')}</td><td>${pc.len.toFixed(1)}</td><td>${r.ok?pc.plants:'–'}</td></tr>`).join('')).join(''); });
-  ditches.forEach((d,i)=>{ html+=`<tr class="z"><td colspan="3">明渠 ${i+1}（畝立て${d.when==='A'?'前':'後'}）　${plen(d.pts).toFixed(1)}m</td></tr>`; });
+  ditches.forEach((d,i)=>{ html+=`<tr class="z"><td colspan="3">明渠 ${i+1}（畝立て${d.when==='A'?'前':'後'}・溝${d.w!==undefined?d.w:+$('dw').value}cm・空き${d.g!==undefined?d.g:+$('dg').value}cm）　${plen(d.pts).toFixed(1)}m</td></tr>`; });
   $('tbl').tBodies[0].innerHTML=html;
+  // 前に戻る用の履歴（ドラッグ中は積まん。1手＝離した時点）
+  if(save!==false&&!dragging&&regSel&&!viewOnly){ const cur=JSON.stringify(serDesign(),(k,v)=>k==='savedAt'?undefined:v); if(fromUndo){ /* undo後の状態は既に先頭 */ } else if(hist[hist.length-1]!==cur){ hist.push(cur); if(hist.length>60) hist.shift(); } }
+  if(!hist.length&&regSel){ hist.push(JSON.stringify(serDesign(),(k,v)=>k==='savedAt'?undefined:v)); }
+  $('hback').disabled=locked||hist.length<2;
   planOv&&planOv.redraw();
 }
 function drawPlan({P,k}){
-  const dwid=+$('dw').value/100; const Pp=poly=>poly.map(([x,y])=>{const q=P(x,y);return `${q[0].toFixed(1)},${q[1].toFixed(1)}`;}).join(' ');
-  const LN=(p1,p2,attrs)=>{ const a=P(p1[0],p1[1]),b=P(p2[0],p2[1]); return `<line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" ${attrs}/>`; };
-  let s=`<polygon class="field-hit" points="${Pp(POLY)}" fill="rgba(255,255,255,.08)" stroke="#fff" stroke-width="4"/><polygon points="${Pp(POLY)}" fill="none" stroke="#e23d28" stroke-width="2"/>`;
-  if(showLabels){ const sgn=area(POLY)>0?1:-1; for(let i=0;i<POLY.length;i++){ const a=POLY[i],b=POLY[(i+1)%POLY.length]; const L=Math.hypot(b[0]-a[0],b[1]-a[1]); if(L<4) continue; const nx=-sgn*(b[1]-a[1])/L, ny=sgn*(b[0]-a[0])/L; const m=P((a[0]+b[0])/2-nx*0,(a[1]+b[1])/2); const q=P((a[0]+b[0])/2,(a[1]+b[1])/2); const lx=q[0]-nx*14, ly=q[1]-ny*14;
-    s+=`<text x="${lx.toFixed(1)}" y="${(ly+3.5).toFixed(1)}" font-size="10" text-anchor="middle" fill="#ffd9d0" font-family="var(--mono)" paint-order="stroke" stroke="#7a1d10" stroke-width="2.5">${L.toFixed(1)}</text>`; } }
+  curK=k; const dwid=+$('dw').value/100, dgap=+$('dg').value/100;
+  const Pt=p=>P(p[0],p[1]); const Pp=poly=>poly.map(p=>{const q=Pt(p);return `${q[0].toFixed(1)},${q[1].toFixed(1)}`;}).join(' ');
+  const T=(q,txt,o)=>`<text x="${q[0].toFixed(1)}" y="${(q[1]+(o&&o.dy!==undefined?o.dy:3.5)).toFixed(1)}" font-size="${(o&&o.fs)||10}" ${o&&o.bold?'font-weight="700"':''} text-anchor="middle" fill="${(o&&o.fill)||'#fff'}" font-family="var(--mono)" paint-order="stroke" stroke="${(o&&o.stroke)||'#000'}" stroke-width="${(o&&o.sw)||2.5}" pointer-events="none">${txt}</text>`;
+  const LN=(p1,p2,attrs)=>{ const a=Pt(p1),b=Pt(p2); return `<line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" ${attrs}/>`; };
+  const WP=WPcur.length?WPcur:workPoly();
+  let s=`<polygon class="field-hit" points="${Pp(POLY)}" fill="rgba(255,255,255,.08)" stroke="#fff" stroke-width="4" pointer-events="none"/><polygon points="${Pp(POLY)}" fill="none" stroke="#e23d28" stroke-width="2" pointer-events="none"/>`;
+  // 作業線（本畝はこの内側で止まる）
+  s+=`<polygon points="${Pp(WP)}" fill="none" stroke="#000" stroke-width="3.5" opacity=".45" pointer-events="none"/><polygon points="${Pp(WP)}" fill="none" stroke="#ffe14d" stroke-width="1.8" stroke-dasharray="7 5" pointer-events="none"/>`;
+  { const sgn=area(POLY)>0?1:-1; for(let i=0;i<POLY.length;i++){ const a=POLY[i],b=POLY[(i+1)%POLY.length]; const L=Math.hypot(b[0]-a[0],b[1]-a[1]); const isSel=i===selE; const A=Pt(a),B=Pt(b);
+    if(!locked) s+=`<line class="edge-hit hit" data-i="${i}" x1="${A[0].toFixed(1)}" y1="${A[1].toFixed(1)}" x2="${B[0].toFixed(1)}" y2="${B[1].toFixed(1)}" stroke="${isSel?'var(--sel)':'transparent'}" stroke-width="${isSel?6:14}" opacity="${isSel?.9:1}" style="cursor:pointer"/>`;
+    if(L<4||!showLabels) continue; const nx=-sgn*(b[1]-a[1])/L, ny=sgn*(b[0]-a[0])/L; const m=Pt([(a[0]+b[0])/2,(a[1]+b[1])/2]); const custom=edgeSb[i]!==undefined;
+    s+=T([m[0]+nx*8,m[1]+ny*8],`空${sbOf(i)}m`,{fill:custom?'#ffe14d':'#ddd',bold:custom});
+    s+=T([m[0]-nx*14,m[1]-ny*14],L.toFixed(1),{fill:'#ffd9d0',stroke:'#7a1d10'}); } }
   zones.forEach((zz,i)=>{ const L=lays[i]; if(!L) return; const isSel=i===selZ; const sw=Math.max(2,L.w*k); const col=zz.kind==='main'?'var(--main)':'var(--head)';
-    s+=`<polygon class="zone-hit hit" data-i="${i}" points="${Pp(zz.pts)}" fill="rgba(255,255,255,.04)" stroke="${isSel?'var(--sel)':col}" stroke-width="${isSel?3:1.5}" stroke-dasharray="${isSel?'':'6 4'}" style="cursor:pointer"/>`;
+    s+=`<polygon class="zone-hit hit" data-i="${i}" points="${Pp(zz.pts)}" fill="rgba(255,255,255,.04)" stroke="${isSel?'var(--sel)':col}" stroke-width="${isSel?3:1.5}" stroke-dasharray="${isSel?'':'6 4'}" style="cursor:${isSel&&!locked?'move':'pointer'}"/>`;
     const every=Math.max(1,Math.ceil(16/(L.pitch*k)));
     for(const r of L.ridges){ for(const pc of r.pieces){
-      s+=LN(pc.p1,pc.p2,`stroke="#fff" stroke-width="${(sw+2).toFixed(1)}" opacity=".6"`);
-      s+=LN(pc.p1,pc.p2,`stroke="${r.ok?col:'var(--off)'}" stroke-width="${sw.toFixed(1)}" opacity="${r.ok?1:.5}"`);
+      s+=LN(pc.p1,pc.p2,`stroke="#fff" stroke-width="${(sw+2).toFixed(1)}" opacity=".6" pointer-events="none"`);
+      s+=LN(pc.p1,pc.p2,`stroke="${r.ok?col:'var(--off)'}" stroke-width="${sw.toFixed(1)}" opacity="${r.ok?1:.5}" pointer-events="none"`);
       if(mode==='ridge'&&!locked) s+=LN(pc.p1,pc.p2,`class="ridge-hit hit" data-z="${i}" data-col="${r.col}" stroke="transparent" stroke-width="${Math.max(sw,9).toFixed(1)}" style="cursor:pointer"`); }
-      if(showLabels && r.ok && r.pieces.length && (r.col%every===0)){ const pc=r.pieces[0]; const q=P((pc.p1[0]+pc.p2[0])/2,(pc.p1[1]+pc.p2[1])/2);
-        s+=`<text x="${q[0].toFixed(1)}" y="${(q[1]+3.5).toFixed(1)}" font-size="10" text-anchor="middle" fill="#fff" font-family="var(--mono)" paint-order="stroke" stroke="#000" stroke-width="2.5">${r.len.toFixed(0)}m</text>`; } }
-    { const [q0,q1,q2,q3]=zz.pts; const span=L.n?(L.w+(L.n-1)*L.pitch):0; const okN=L.ridges.filter(r=>r.ok).length; const mx=(q1[0]+q2[0])/2,my=(q1[1]+q2[1])/2; const cx=(q0[0]+q1[0]+q2[0]+q3[0])/4,cy=(q0[1]+q1[1]+q2[1]+q3[1])/4; const a=P(mx,my),c=P(cx,cy); const dx=a[0]-c[0],dy=a[1]-c[1]; const dl=Math.hypot(dx,dy)||1;
-      s+=`<text x="${(a[0]+dx/dl*14).toFixed(1)}" y="${(a[1]+dy/dl*14+3.5).toFixed(1)}" font-size="11" font-weight="700" text-anchor="middle" fill="#fff" font-family="var(--mono)" paint-order="stroke" stroke="${zz.kind==='main'?'#0b4a22':'#7a3d00'}" stroke-width="3">${okN}本 / 幅${span.toFixed(1)}m</text>`; }
-    if(!locked&&mode==='ridge') zz.pts.forEach((pt,pi)=>{ const q=P(pt[0],pt[1]); s+=`<circle class="zpt hit" data-z="${i}" data-i="${pi}" cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="${isSel?10:7}" fill="#fff" stroke="${isSel?'var(--sel)':col}" stroke-width="${isSel?3:2}" style="cursor:move"/>`; if(isSel) s+=`<text x="${q[0].toFixed(1)}" y="${(q[1]+3.5).toFixed(1)}" font-size="10" font-weight="700" text-anchor="middle" fill="#000">${pi+1}</text>`; });
+      if(showLabels && r.ok && r.pieces.length && (r.col%every===0)){ const pc=r.pieces[0]; s+=T(Pt([(pc.p1[0]+pc.p2[0])/2,(pc.p1[1]+pc.p2[1])/2]),r.len.toFixed(0)+'m'); } }
+    { const [q0,q1,q2,q3]=zz.pts; const span=L.n?(L.w+(L.n-1)*L.pitch):0; const okN=L.ridges.filter(r=>r.ok).length; const a=Pt([(q1[0]+q2[0])/2,(q1[1]+q2[1])/2]),c=Pt([(q0[0]+q1[0]+q2[0]+q3[0])/4,(q0[1]+q1[1]+q2[1]+q3[1])/4]); const dx=a[0]-c[0],dy=a[1]-c[1]; const dl=Math.hypot(dx,dy)||1;
+      s+=T([a[0]+dx/dl*14,a[1]+dy/dl*14],`${okN}本 / 幅${span.toFixed(1)}m`,{fs:11,bold:true,stroke:zz.kind==='main'?'#0b4a22':'#7a3d00',sw:3}); }
+    if(!locked&&mode==='ridge') zz.pts.forEach((pt,pi)=>{ const q=Pt(pt); const on=selPt&&selPt.type==='z'&&selPt.z===i&&selPt.i===pi; s+=`<circle class="zpt hit" data-z="${i}" data-i="${pi}" cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="${isSel?10:7}" fill="${on?'#ffe14d':'#fff'}" stroke="${isSel?'var(--sel)':col}" stroke-width="${isSel?3:2}" style="cursor:move"/><circle class="zpt hit" data-z="${i}" data-i="${pi}" cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="28" fill="transparent" style="cursor:move"/>`; if(isSel) s+=T(q,String(pi+1),{fill:'#000',stroke:'none',sw:0,bold:true}); });
   });
-  ditches.forEach((d,i)=>{ const isSel=i===selD; const col=d.when==='A'?'var(--ditchA)':'var(--ditchB)'; const dsw=Math.max(3,dwid*k);
-    s+=`<polyline points="${Pp(d.pts)}" fill="none" stroke="#fff" stroke-width="${(dsw+3).toFixed(1)}" opacity=".7"/><polyline points="${Pp(d.pts)}" fill="none" stroke="${col}" stroke-width="${dsw.toFixed(1)}" stroke-dasharray="${d.when==='B'?'10 5':''}"/>`;
+  ditches.forEach((d,i)=>{ const isSel=i===selD; const col=d.when==='A'?'var(--ditchA)':'var(--ditchB)'; const dsw=Math.max(3,(d.w!==undefined?d.w/100:dwid)*k); const gsw=Math.max(dsw,(d.g!==undefined?d.g/100:dgap)*k);
+    s+=`<polyline points="${Pp(d.pts)}" fill="none" stroke="#fff" stroke-width="${gsw.toFixed(1)}" opacity=".28" stroke-linecap="butt" pointer-events="none"/><polyline points="${Pp(d.pts)}" fill="none" stroke="#1a1a1a" stroke-width="${Math.max(dsw,2).toFixed(1)}" opacity=".8" stroke-linecap="butt" pointer-events="none"/><polyline points="${Pp(d.pts)}" fill="none" stroke="${col}" stroke-width="${isSel?2.2:1.4}" stroke-linecap="butt" pointer-events="none"/>`;
     s+=`<polyline class="ditch-hit hit" data-i="${i}" points="${Pp(d.pts)}" fill="none" stroke="transparent" stroke-width="16" style="cursor:pointer"/>`;
-    const j=Math.floor((d.pts.length-1)/2); const mid=d.pts[j], nxt=d.pts[Math.min(d.pts.length-1,j+1)]; const q=P((mid[0]+nxt[0])/2,(mid[1]+nxt[1])/2);
-    s+=`<text x="${q[0].toFixed(1)}" y="${(q[1]-8).toFixed(1)}" font-size="11" text-anchor="middle" fill="#fff" font-family="var(--mono)" paint-order="stroke" stroke="#000" stroke-width="2.5">明渠${d.when==='A'?'前':'後'} ${plen(d.pts).toFixed(0)}m</text>`;
-    if(!locked&&mode==='ridge') d.pts.forEach((pt,pi)=>{ const q=P(pt[0],pt[1]); s+=`<circle class="dpt hit" data-d="${i}" data-i="${pi}" cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="${isSel?9:6}" fill="#fff" stroke="${isSel?'var(--sel)':col}" stroke-width="${isSel?3:2}" style="cursor:move"/>`; });
+    const e1=d.pts[d.pts.length-1], e0=d.pts[d.pts.length-2]||e1; const E1=Pt(e1),E0=Pt(e0); const ex=E1[0]-E0[0],ey=E1[1]-E0[1]; const el=Math.hypot(ex,ey)||1;
+    s+=T([E1[0]+ex/el*12,E1[1]+ey/el*12],`${d.when==='A'?'前':'後'}${plen(d.pts).toFixed(0)}m`,{fill:col,fs:9.5});
+    if(!locked&&mode==='ridge') d.pts.forEach((pt,pi)=>{ const q=Pt(pt); const on=selPt&&selPt.type==='d'&&selPt.d===i&&selPt.i===pi; s+=`<circle class="dpt hit" data-d="${i}" data-i="${pi}" cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="${isSel?10:7}" fill="${on?'#ffe14d':'#fff'}" stroke="${isSel?'var(--sel)':col}" stroke-width="${isSel?3:2}" style="cursor:move"/><circle class="dpt hit" data-d="${i}" data-i="${pi}" cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="28" fill="transparent" style="cursor:move"/>`; });
   });
-  if(drawPts.length){ const col=mode==='main'?'var(--main)':mode==='head'?'var(--head)':mode==='dA'?'var(--ditchA)':'var(--ditchB)';
-    s+=`<polyline points="${Pp(drawPts)}" fill="none" stroke="${col}" stroke-width="2.5" stroke-dasharray="5 4"/>`;
-    drawPts.forEach((pt,pi)=>{ const q=P(pt[0],pt[1]); s+=`<circle cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="7" fill="${col}" stroke="#fff" stroke-width="2"/><text x="${q[0].toFixed(1)}" y="${(q[1]+3.5).toFixed(1)}" font-size="10" font-weight="700" text-anchor="middle" fill="#fff">${pi+1}</text>`; });
-    if((mode==='main'||mode==='head')&&drawPts.length>=2){ const [a,b]=drawPts; const L=Math.hypot(b[0]-a[0],b[1]-a[1]); const q=P((a[0]+b[0])/2,(a[1]+b[1])/2); s+=`<text x="${q[0].toFixed(1)}" y="${(q[1]-8).toFixed(1)}" font-size="11" text-anchor="middle" fill="#fff" font-family="var(--mono)" paint-order="stroke" stroke="#000" stroke-width="2.5">畝の向き ${L.toFixed(0)}m</text>`; } }
+  // 選択中のまとまり：外周までの距離（畝方向・横）と、他のまとまりまでの距離
+  if(selZ>=0&&zones[selZ]){ const zz=zones[selZ]; const DL=(p,q,txt)=>{ const a=Pt(p),b=Pt(q); return `<line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="#fff" stroke-width="1.5" stroke-dasharray="3 3" pointer-events="none"/>`+T([(a[0]+b[0])/2,(a[1]+b[1])/2],txt,{fill:'#ffe14d'}); };
+    { const th=Math.atan2(zz.pts[1][1]-zz.pts[0][1],zz.pts[1][0]-zz.pts[0][0])+zz.ang*Math.PI/180; const ux=Math.cos(th),uy=Math.sin(th),vx=-uy,vy=ux;
+      const us=zz.pts.map(q=>q[0]*ux+q[1]*uy), vs=zz.pts.map(q=>q[0]*vx+q[1]*vy); const u0=Math.min(...us),u1=Math.max(...us),v0=Math.min(...vs),v1=Math.max(...vs); const um=(u0+u1)/2,vm=(v0+v1)/2;
+      const P2=(u,v)=>[u*ux+v*vx,u*uy+v*vy];
+      [[P2(u0,vm),-ux,-uy,'畝方向 '],[P2(u1,vm),ux,uy,'畝方向 '],[P2(um,v0),-vx,-vy,'横 '],[P2(um,v1),vx,vy,'横 ']].forEach(([p0,dx,dy,tag])=>{ const h=rayPoly(p0,dx,dy); if(h&&h.t>=0.2&&h.t<=60) s+=DL(p0,h.q,tag+h.t.toFixed(1)+'m'); }); }
+    for(let e=0;e<4;e++){ const a=zz.pts[e],b=zz.pts[(e+1)%4]; let best=null;
+      zones.forEach((o,oi)=>{ if(oi===selZ) return; for(let f=0;f<4;f++){ const r=segSegDist(a,b,o.pts[f],o.pts[(f+1)%4]); if(!best||r.d<best.d) best=r; } });
+      if(best&&best.d>=0.3&&best.d<=30) s+=DL(best.p,best.q,best.d.toFixed(1)+'m'); } }
+  // 計測線
+  measures.forEach((mm,i)=>{ const isSel=i===selM; const a=Pt(mm.a),b=Pt(mm.b); const L=Math.hypot(mm.b[0]-mm.a[0],mm.b[1]-mm.a[1]);
+    s+=`<line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="#000" stroke-width="4" opacity=".5" pointer-events="none"/><line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="${isSel?'var(--sel)':'#fff'}" stroke-width="2" pointer-events="none"/>`;
+    s+=`<line class="meas-hit hit" data-i="${i}" x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="transparent" stroke-width="14" style="cursor:pointer"/>`;
+    [a,b].forEach(q=>{ s+=`<circle cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="4" fill="${isSel?'var(--sel)':'#fff'}" stroke="#000" stroke-width="1.5" pointer-events="none"/>`; });
+    s+=T([(a[0]+b[0])/2,(a[1]+b[1])/2-7],L.toFixed(1)+'m',{fs:11,bold:true,sw:3}); });
+  if(drawPts.length){ const col=mode==='main'?'var(--main)':mode==='head'?'var(--head)':mode==='dA'?'var(--ditchA)':mode==='meas'?'#fff':'var(--ditchB)';
+    s+=`<polyline points="${Pp(drawPts)}" fill="none" stroke="${col}" stroke-width="2.5" stroke-dasharray="5 4" pointer-events="none"/>`;
+    drawPts.forEach((pt,pi)=>{ const q=Pt(pt); s+=`<circle cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="7" fill="${col}" stroke="#fff" stroke-width="2" pointer-events="none"/>`+T(q,String(pi+1),{stroke:'none',sw:0,bold:true}); });
+    if(drawPts.length>=2){ const [a,b]=drawPts; const L=Math.hypot(b[0]-a[0],b[1]-a[1]); const q=Pt([(a[0]+b[0])/2,(a[1]+b[1])/2]); s+=T([q[0],q[1]-8],mode==='meas'?`${L.toFixed(1)}m（未確定）`:(mode==='main'||mode==='head')?`畝の向き ${L.toFixed(0)}m`:`${L.toFixed(1)}m`,{fs:11,bold:true,fill:mode==='meas'?'#ffe14d':'#fff',sw:3}); } }
   return s;
 }
 
