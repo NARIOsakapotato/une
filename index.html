@@ -208,7 +208,7 @@ input[type=search]{width:100%;font:inherit;font-size:14px;padding:9px 12px;borde
     <button type="button" id="goView" hidden>設計図を見る</button>
     <button type="button" id="goDesign" hidden>設計する</button>
   </div>
-  <div class="srch"><input type="text" id="addr" placeholder="住所や地名で地図を移動（例：富田林市 〇〇町）"><button type="button" id="addrGo">移動</button><button type="button" id="gps" title="今いる場所へ">📍</button><button type="button" id="allf" title="登録済みの圃場を全部表示">全圃場</button></div>
+  <div class="srch"><input type="text" id="addr" placeholder="住所や地名で地図を移動（例：富田林市 〇〇町）"><button type="button" id="addrGo">移動</button><button type="button" id="gps" title="今いる場所へ">📍</button><button type="button" id="allf" title="登録済みの圃場を全部表示">全圃場</button><button type="button" class="wheelBtn" title="ホイール／2本指スクロールの動き。マウスなら拡大、トラックパッドなら移動が楽">ホイール：拡大</button></div>
   <div class="mapwrap">
     <p class="hint" id="reg-hint"></p>
     <p class="areacheck" id="reg-area"></p>
@@ -243,7 +243,7 @@ input[type=search]{width:100%;font:inherit;font-size:14px;padding:9px 12px;borde
   <div class="mapwrap">
     <p class="hint" id="hint"></p>
     <div id="plan" class="gmap"></div>
-    <div class="view"><button type="button" id="labels" aria-pressed="true">m表示</button><button type="button" id="fit-field" class="txt">圃場へ</button></div>
+    <div class="view"><button type="button" id="labels" aria-pressed="true">m表示</button><button type="button" id="fit-field" class="txt">圃場へ</button><button type="button" class="wheelBtn" title="ホイール／2本指スクロールの動き。マウスなら拡大、トラックパッドなら移動が楽">ホイール：拡大</button></div>
     <div class="savebar" id="savebar"></div>
     <div class="nudge" id="nudge" hidden><div class="lab" id="nudge-lab">点を微調整</div><span></span><button type="button" data-dx="0" data-dy="-1">↑</button><span></span><button type="button" data-dx="-1" data-dy="0">←</button><button type="button" data-dx="0" data-dy="1">↓</button><button type="button" data-dx="1" data-dy="0">→</button><div class="stp"><button type="button" data-s="0.1" aria-pressed="true">10cm</button><button type="button" data-s="0.5">50cm</button><button type="button" data-s="1">1m</button></div></div>
     <div class="regbar2"><button type="button" id="revertBtn" disabled>元に戻す</button><button type="button" id="regBtn" disabled>設計を登録（登録済）</button></div>
@@ -582,7 +582,13 @@ function openDesign(field, outline, design, ver, view){
   fitField(); render(false);
 }
 // トラックパッド：2本指スクロール＝移動、ピンチ（ctrl/⌘＋スクロール）＝拡大
-function installWheel(div,map){ div.addEventListener('wheel',e=>{ e.preventDefault(); if(e.ctrlKey||e.metaKey){ map.setZoom(Math.max(10,Math.min(22,map.getZoom()-e.deltaY*0.01))); } else map.panBy(e.deltaX,e.deltaY); },{passive:false}); }
+// ホイールの動き：拡大（マウス向け・Googleマップ標準）／移動（トラックパッド向け）。端末ごとに記憶
+let wheelMode=localStorage.getItem('une_wheel')||'zoom'; const WHEEL_MAPS=[];
+function applyWheel(){ WHEEL_MAPS.forEach(m=>m.setOptions({scrollwheel:wheelMode==='zoom'})); document.querySelectorAll('.wheelBtn').forEach(b=>{ b.textContent=wheelMode==='zoom'?'ホイール：拡大':'ホイール：移動'; b.setAttribute('aria-pressed',wheelMode==='pan'); }); }
+document.querySelectorAll('.wheelBtn').forEach(b=>b.onclick=()=>{ wheelMode=wheelMode==='zoom'?'pan':'zoom'; localStorage.setItem('une_wheel',wheelMode); applyWheel(); });
+function installWheel(div,map){ WHEEL_MAPS.push(map); applyWheel();
+  div.addEventListener('wheel',e=>{ if(wheelMode==='zoom'&&!(e.ctrlKey||e.metaKey)) return; // 拡大モードはGoogleマップに任せる
+    e.preventDefault(); if(e.ctrlKey||e.metaKey){ map.setZoom(Math.max(10,Math.min(22,map.getZoom()-e.deltaY*0.01))); } else map.panBy(e.deltaX,e.deltaY); },{passive:false}); }
 let planDragging=false, hitAt=0, designFieldId=null, lastTapAt=0, lastTapPm=null, dragging=false, hist=[], histFid=null;
 document.addEventListener('pointerdown',e=>{ const t=e.target; if(t instanceof Element && t.closest('#plan') && t.closest('.hit')) hitAt=Date.now(); },true);
 function fitField(){ const b=new google.maps.LatLngBounds(); POLY.forEach(p=>b.extend(toLatLng(p))); planMap.fitBounds(b,40); }
