@@ -450,7 +450,7 @@ input[type=search]{width:100%;font:inherit;font-size:14px;padding:9px 12px;borde
   <h2><b>① 資材を登録</b><span>この行に打って「登録」。登録したら下の表に出る</span></h2>
   <div class="newbar" id="sz-newbar">
     <select id="sz-n-cat"></select><input type="text" id="sz-n-name" placeholder="品名（必須）" style="flex:2;min-width:160px"><select id="sz-n-basis"></select><select id="sz-n-unit"></select>
-    <label>入り数<input type="number" id="sz-n-pack" step="0.1" value="20" style="width:64px"></label><select id="sz-n-packUnit"><option>袋</option><option>本</option><option>箱</option><option>缶</option></select>
+    <label>一袋あたり<input type="number" id="sz-n-pack" step="0.1" value="20" style="width:64px"></label><select id="sz-n-packUnit"><option>袋</option><option>本</option><option>箱</option><option>缶</option></select>
     <label>単価<input type="number" id="sz-n-price" step="10" placeholder="円" style="width:80px"></label>
     <span class="nbsep"></span>
     <label><b>10aあたりの量</b><input type="number" id="sz-n-rate" step="0.1" placeholder="例 80" style="width:84px"><span id="sz-n-rateUnit">kg</span></label>
@@ -1133,7 +1133,7 @@ function rowOf(it){ const d=drafts[it.id]||it; const dirty=!!drafts[it.id]; cons
     <td>${inp('memo','text','')}</td>
     <td><button type="button" class="danger" data-del="${it.id}" title="資材を消す">✕</button></td></tr>`; }
 function renderRegList(){ const q=($('sz-rq').value||'').trim(); const pf=$('sz-rPat').value||'all';
-  $('sz-regHead').innerHTML=`<th></th><th>分類</th><th>品名</th><th>メーカー・購入先</th><th>基準</th><th>単位</th>${S.patterns.map(p=>`<th class="num ar" title="パターンごとの10aあたりの量" style="color:var(--accent)">${esc(p.name)}</th>`).join('')}<th class="num">入り数</th><th>荷姿</th><th class="num">仕入単価 円</th><th class="num">水量 L/10a</th><th class="num">希釈 倍</th><th>メモ</th><th></th>`;
+  $('sz-regHead').innerHTML=`<th></th><th>分類</th><th>品名</th><th>メーカー・購入先</th><th>基準</th><th>単位</th>${S.patterns.map(p=>`<th class="num ar" title="パターンごとの10aあたりの量" style="color:var(--accent)">${esc(p.name)}</th>`).join('')}<th class="num">一袋あたり</th><th>荷姿</th><th class="num">仕入単価 円</th><th class="num">水量 L/10a</th><th class="num">希釈 倍</th><th>メモ</th><th></th>`;
   const list=S.items.filter(i=>(!q||(i.name||'').includes(q)||(i.maker||'').includes(q))&&(pf==='all'||(pf==='none'?!Object.keys(i.rates||{}).length:!!(i.rates&&i.rates[pf])))).sort((a,b)=>CATS.indexOf(a.cat)-CATS.indexOf(b.cat)||(a.name||'').localeCompare(b.name||'','ja'));
   const tb=$('sz-regTbl').tBodies[0]; tb.innerHTML=list.map(rowOf).join('')||`<tr><td colspan="${12+S.patterns.length}" style="color:var(--muted)">資材がまだない。「＋ 新しい資材」から。</td></tr>`;
   tb.querySelectorAll('input,select').forEach(el=>{ const h=()=>{ const tr=el.closest('tr'); const id=tr.dataset.id; const base=drafts[id]||S.items.find(i=>i.id===id)||newRows.find(r=>r.id===id); const d=drafts[id]||JSON.parse(JSON.stringify(base)); d.rates=d.rates||{};
