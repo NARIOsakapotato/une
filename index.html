@@ -170,6 +170,118 @@ input[type=search]{width:100%;font:inherit;font-size:14px;padding:9px 12px;borde
 @media (max-width:900px){.side{border-right:0;border-bottom:1px solid var(--line)}.flist{max-height:40vh}}
 #map.draw{cursor:crosshair}
 .skip-note{font-size:11.5px;color:var(--muted);margin:8px 0 0}
+.home{max-width:960px;margin:0 auto;padding:14px 16px 40px}
+.homebar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.homebar input[type=search]{flex:1;min-width:180px}
+.chips{display:flex;gap:4px;flex-wrap:wrap}
+.chips button{font-size:12px;padding:5px 10px;border-radius:999px;background:var(--panel2);color:var(--muted)}
+.chips button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.homemenu{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.homemenu button{padding:9px 14px;border-radius:10px;background:var(--panel);border:1px solid var(--line);color:var(--fg);font-weight:700}
+.home .flist{max-height:none}
+.bulkbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px;padding:8px 10px;border:1px solid var(--sel);border-radius:10px;background:var(--panel)}
+.bulkbar button.primary{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.bulkbar select{background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:6px 8px;color:inherit;font:inherit}
+.flist button .off{color:var(--muted);font-size:11px;margin-left:6px;border:1px solid var(--line);border-radius:999px;padding:0 6px;background:var(--panel2)}
+.flist button.isoff{opacity:.6}
+.flist button input[type=checkbox]{width:18px;height:18px;margin-right:8px;vertical-align:-3px}
+#bulkBtn[aria-pressed="true"]{background:var(--sel);color:#2a2200}
+.flist button .dz{color:var(--head);font-size:11px;margin-left:6px}
+.flist button .ar{font-size:11px;color:var(--muted);margin-left:6px;border:1px solid var(--line);border-radius:999px;padding:0 6px}
+.flist button .ar.none{color:var(--warn);border-color:var(--warn)}
+.backbtn{font-size:13px;padding:6px 10px;border-radius:999px;background:var(--panel2);color:var(--fg);white-space:nowrap}
+#ctxArea{font-size:11px;padding:1px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.matwrap{max-width:1280px;margin:0 auto;padding:14px 16px 40px}
+.szs .regwrap{display:grid;grid-template-columns:minmax(300px,420px) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:900px){.szs .regwrap{grid-template-columns:1fr}}
+.szs .regform{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+.szs .szform{display:grid;grid-template-columns:1fr 1fr;gap:8px 10px}
+.szs .szform label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--muted);min-width:0}
+.szs .szform input,.szs .szform select{width:100%}
+.szs .szform input[type=number]{text-align:left}
+.szs .areaRates{display:grid;grid-template-columns:1fr;gap:6px}
+.szs .areaRates label{display:flex;align-items:center;gap:8px;font-size:13px;padding:6px 8px;border:1px solid var(--line);border-radius:8px}
+.szs .areaRates label input[type=checkbox]{width:18px;height:18px}
+.szs .areaRates label input[type=number]{margin-left:auto;width:100px}
+.szs .areaRates label.on{border-color:var(--accent);background:var(--panel2)}
+.szs tr.sel td{background:var(--panel2)}
+.szs tr.sel td:first-child{box-shadow:inset 3px 0 0 var(--accent)}
+.szs #sz-regTbl td input[type=text]{width:120px}
+.szs #sz-regTbl td input[type=number]{width:62px}
+.szs #sz-regTbl td input[data-k=price]{width:80px}
+.szs #sz-regTbl td select{max-width:120px}
+.szs #sz-regTbl td,.szs #sz-regTbl th{padding:4px 5px}
+.szs #sz-regTbl tr.dirty td{background:rgba(255,225,77,.12)}
+.szs #sz-regTbl tr.dirty td:first-child{box-shadow:inset 3px 0 0 var(--sel)}
+.szs #sz-regTbl td.ar input{width:64px;border-color:var(--accent)}
+.szs #sz-regTbl td.ar input:placeholder-shown{border-color:var(--line)}
+.szs .newbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:10px;border:1.5px solid var(--accent);border-radius:10px;background:var(--panel)}
+.szs .newbar label{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--muted)}
+.szs .newbar button.primary{padding:8px 18px}
+.szs .rowbtns{display:flex;gap:4px}
+.szs .rowbtns button{padding:5px 8px;font-size:12px}
+.szs .rowbtns button.save{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.szs .rowbtns button:disabled{opacity:.4}
+.szs .achip{display:inline-block;font-size:11px;padding:0 6px;border-radius:999px;border:1px solid var(--line);margin-right:3px;color:var(--muted)}
+.szs /* 配色：畝立てアプリと揃える。畑の緑を主役、数字は等幅 */
+.szs button, .szs input, .szs select{font:inherit;color:inherit}
+.szs button{cursor:pointer;border:0;background:var(--panel2);border-radius:8px;padding:7px 12px}
+.szs button[aria-pressed="true"], .szs button.primary{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.szs button.ghost{background:transparent;border:1px solid var(--line)}
+.szs button.danger{color:var(--danger)}
+.szs input, .szs select{background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:6px 8px;min-width:0}
+.szs input[type=number]{font-family:var(--mono);text-align:right;width:84px}
+.szs .sznav{display:flex;gap:4px;margin-left:auto;background:var(--panel2);padding:3px;border-radius:10px}
+.szs .sznav button{background:transparent;padding:6px 12px}
+.szs .sznav button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.szs main{padding-block:16px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));max-width:1280px;margin:0 auto}
+.szs .areas{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.szs .areas button{padding:8px 14px}
+.szs .areas button b{font-family:var(--mono);font-weight:500;margin-left:6px;opacity:.75}
+.szs h2{font-size:13px;color:var(--muted);font-weight:500;margin:18px 0 8px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.szs h2 b{font-size:15px;color:var(--fg);font-weight:700}
+.szs .tblwrap{max-height:none;overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+.szs table{border-collapse:collapse;width:100%;min-width:720px}
+.szs th, .szs td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle;white-space:nowrap}
+.szs th{font-size:11px;color:var(--muted);font-weight:500;letter-spacing:.04em;background:var(--panel2);position:sticky;top:0}
+.szs td.num, .szs th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.szs td input[type=text]{width:150px}
+.szs td select{max-width:150px}
+.szs tr.cat td{background:var(--panel2);font-weight:700;font-size:12px}
+.szs tr.ex td input[type=text]{color:var(--muted)}
+.szs .hint{font-size:12px;color:var(--muted);margin:6px 0 0}
+.szs .bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0}
+.szs .chip{display:inline-block;font-size:11px;padding:1px 7px;border-radius:99px;background:var(--panel2);color:var(--muted);font-family:var(--mono)}
+.szs .chip.warn{color:var(--warn);border:1px solid var(--warn);background:transparent}
+.szs .chip.ok{color:var(--ok)}
+.szs .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:12px}
+.szs .stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.szs .stat b{display:block;font-family:var(--mono);font-size:20px;font-weight:700}
+.szs .stat span{font-size:11px;color:var(--muted)}
+.szs details.frow{border:1px solid var(--line);border-radius:10px;background:var(--panel);margin-bottom:6px}
+.szs details.frow summary{list-style:none;display:grid;grid-template-columns:minmax(120px,1.4fr) 92px 100px 110px 1fr;gap:10px;align-items:center;padding:8px 12px;cursor:pointer}
+.szs details.frow summary::-webkit-details-marker{display:none}
+.szs details.frow summary .n{font-weight:700}
+.szs details.frow summary .m{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right}
+.szs details.frow summary .sum{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.szs details.frow .body{padding:4px 12px 12px;border-top:1px solid var(--line)}
+.szs .inline{display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:13px;margin:8px 0}
+.szs .inline label{display:flex;gap:6px;align-items:center}
+.szs .ov{color:var(--warn);font-weight:700}
+@media (max-width:640px){.szs details.frow summary{grid-template-columns:1fr 80px 80px;gap:6px}
+.szs details.frow summary .sum, .szs details.frow summary .m.hide{display:none}}
+.szs .sznav{display:inline-flex;gap:4px;background:var(--panel2);padding:3px;border-radius:10px;margin-bottom:12px}
+.szs .sznav button{background:transparent;padding:6px 12px}
+.szs .sznav button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.szs{padding:16px 16px 40px;max-width:1280px;margin:0 auto}
+.szs button{border:0;background:var(--panel2);border-radius:8px;padding:7px 12px;cursor:pointer;color:inherit;font:inherit}
+.szs input,.szs select{background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:6px 8px;font:inherit;color:inherit;min-width:0}
+.szs input[type=number]{font-family:var(--mono);text-align:right;width:84px}
+
+.shell.reg{grid-template-columns:minmax(0,1fr)}
+.viewonly .nudge{display:none!important}
+.matstat{font-size:11px;color:var(--muted);white-space:nowrap}.matstat.busy{color:var(--warn)}.matstat.err{color:var(--danger)}
+.addf{display:flex;gap:6px;margin-top:12px}.addf input{flex:1;min-width:0}
 </style>
 
 </head>
@@ -184,19 +296,27 @@ input[type=search]{width:100%;font:inherit;font-size:14px;padding:9px 12px;borde
 </div></div>
 
 <header class="top">
-  <h1 id="title">圃場登録</h1>
+  <button type="button" id="back" class="backbtn" hidden>← 圃場一覧</button>
+  <h1 id="title">圃場一覧</h1>
+  <span id="ctxArea" hidden></span>
+  <span id="matstat" class="matstat"></span>
   <button type="button" id="lock" aria-pressed="true" hidden>🔒 ロック中</button>
-  <nav class="nav"><button type="button" id="nav-reg" aria-pressed="true">圃場</button><button type="button" id="nav-view" aria-pressed="false" disabled>設計図</button><button type="button" id="nav-design" aria-pressed="false" disabled>設計する</button></nav>
+  <nav class="nav" id="fnav" hidden><button type="button" id="nav-reg" aria-pressed="false">外周</button><button type="button" id="nav-view" aria-pressed="false">設計図</button><button type="button" id="nav-design" aria-pressed="false">設計する</button><button type="button" id="nav-mat" aria-pressed="false">資材</button></nav>
   <button type="button" id="logout" title="名前を変える">👤 <span id="meName"></span></button>
 </header>
 
-<div id="scr-reg">
-<div class="shell reg">
-<aside class="side">
-  <input type="search" id="q" placeholder="圃場名で絞る" autocomplete="off">
+<div id="scr-home">
+<div class="home">
+  <div class="homebar"><input type="search" id="q" placeholder="圃場名で絞る" autocomplete="off"><div class="chips" id="areaChips"></div></div>
+  <div class="homemenu"><button type="button" id="go-matreg">資材登録</button><button type="button" id="go-order">発注まとめ</button><span style="flex:1"></span><button type="button" id="bulkBtn" aria-pressed="false">まとめて変える</button></div>
+  <div class="bulkbar" id="bulkbar" hidden><button type="button" id="bulkAll">今の絞り込みを全選択</button><button type="button" id="bulkNone">選択を外す</button><span id="bulkN" class="note" style="margin:0"></span><span style="flex:1"></span><button type="button" id="bulkOn" class="primary">対象にする</button><select id="bulkReason"><option>休耕</option><option>候補地</option><option>他作物</option></select><button type="button" id="bulkOff">対象外にする</button><span style="border-left:1px solid var(--line);height:24px"></span><select id="bulkPat"></select><button type="button" id="bulkPatBtn">パターンを割当</button></div>
   <div class="flist" id="flist"></div>
   <div class="addf"><input type="text" id="nfName" placeholder="新しい圃場名"><input type="number" id="nfArea" placeholder="面積a" step="0.1" style="width:80px"><button type="button" id="nfAdd">追加</button></div>
-</aside>
+</div>
+</div>
+
+<div id="scr-reg">
+<div class="shell reg">
 <section class="stage">
   <div class="regbar">
     <span id="reg-name"></span>
@@ -205,8 +325,6 @@ input[type=search]{width:100%;font:inherit;font-size:14px;padding:9px 12px;borde
     <button type="button" id="undo">一つ戻す</button>
     <button type="button" id="clear">やり直し</button>
     <button type="button" id="save" disabled>保存</button>
-    <button type="button" id="goView" hidden>設計図を見る</button>
-    <button type="button" id="goDesign" hidden>設計する</button>
   </div>
   <div class="srch"><input type="text" id="addr" placeholder="住所や地名で地図を移動（例：富田林市 〇〇町）"><button type="button" id="addrGo">移動</button><button type="button" id="gps" title="今いる場所へ">📍</button><button type="button" id="allf" title="登録済みの圃場を全部表示">全圃場</button><button type="button" class="wheelBtn" title="ホイール／2本指スクロールの動き。マウスなら拡大、トラックパッドなら移動が楽">ホイール：拡大</button></div>
   <div class="mapwrap">
@@ -315,6 +433,53 @@ input[type=search]{width:100%;font:inherit;font-size:14px;padding:9px 12px;borde
 </div>
 </div>
 
+<div id="scr-mat" class="szs" hidden><div class="matwrap"><div id="sz-one"></div></div></div>
+<div id="scr-shizai" class="szs" hidden>
+
+<section id="sz-v-reg" hidden>
+  <h2><b>設計パターン</b><span>施肥・農薬の組み方。エリア一括でも、圃場ごとでも割り当てられる</span></h2>
+  <div class="bar" id="sz-patBar"></div>
+  <div class="bar" id="sz-areaPatBar"></div>
+  <h2><b>① 資材を登録</b><span>この行に打って「登録」。登録したら下の表に出る</span></h2>
+  <div class="newbar" id="sz-newbar">
+    <select id="sz-n-cat"></select><input type="text" id="sz-n-name" placeholder="品名（必須）" style="flex:2;min-width:160px"><select id="sz-n-basis"></select><select id="sz-n-unit"></select>
+    <label>入り数<input type="number" id="sz-n-pack" step="0.1" value="20" style="width:64px"></label><select id="sz-n-packUnit"><option>袋</option><option>本</option><option>箱</option><option>缶</option></select>
+    <label>単価<input type="number" id="sz-n-price" step="10" placeholder="円" style="width:80px"></label>
+    <button type="button" class="primary" id="sz-rNew">登録</button>
+  </div>
+  <p class="hint" id="sz-newmsg">メーカー・メモ・散布水量は、登録したあと下の表で足せる。</p>
+  <h2><b>② パターンごとの量</b><span>下の表のパターン列に10aあたりの量（マルチは畝100mあたり）。打ったらその場で保存。空＝そのパターンでは使わん</span></h2>
+  <div class="bar"><input type="search" id="sz-rq" placeholder="品名・メーカーで絞る" style="flex:1;min-width:140px"><select id="sz-rPat"></select></div>
+  <div class="tblwrap"><table id="sz-regTbl"><thead><tr id="sz-regHead"></tr></thead><tbody></tbody></table></div>
+  <p class="hint">品名・荷姿・単価などを直したら、行の左に出る「<b>保存</b>」を押す（黄色＝未保存）。パターン列の量はその場で保存される。</p>
+</section>
+
+<section id="sz-v-area">
+  <div class="areas" id="sz-patBtns"></div>
+  <div class="stats" id="sz-areaStats"></div>
+  <h2><b>分類</b><span>足す・名前を変える・使ってへん分類は消せる</span></h2>
+  <div class="bar" id="sz-catBar"></div>
+  <h2><b id="sz-areaTitle"></b><span>このパターンの基準量（10aあたり、マルチは畝100mあたり）。品名・単価は「資材登録」で</span></h2>
+  <div class="bar">
+    <span class="lbl">このパターンを基本にするエリア</span><span id="sz-patAreas"></span>
+    <span style="flex:1"></span>
+    <select id="sz-addCat"></select><button type="button" id="sz-addItem">＋ このパターンに足す</button><button type="button" class="ghost" id="sz-goReg">資材登録へ</button>
+  </div>
+  <div class="tblwrap"><table id="sz-itemTbl"><thead><tr><th>分類</th><th>品名</th><th>基準</th><th class="num">このパターンの基準量</th><th>単位</th><th>散布</th><th>荷姿</th><th class="num">仕入単価 円</th><th>メモ</th><th></th></tr></thead><tbody></tbody></table></div>
+  <p class="hint">✕はこのパターンから外すだけで、資材は消えへん。基準＝<b>10a</b>：面積から／<b>畝100m</b>：畝立て設計の畝mから／<b>散布</b>：散布水量÷希釈で原液量／<b>1枚</b>：圃場1枚につき。</p>
+</section>
+
+<section id="sz-v-field" hidden><div id="sz-flist"></div></section>
+
+<section id="sz-v-order" hidden>
+  <div class="bar"><label>見る <select id="sz-oScope"></select></label><label>単位 <select id="sz-oUnit"><option value="pack">袋・本数（切り上げ）</option><option value="qty">正味量</option></select></label></div>
+  <div class="stats" id="sz-orderStats"></div>
+  <div class="tblwrap"><table id="sz-orderTbl"><thead><tr><th>分類</th><th>品名</th><th class="num">八尾</th><th class="num">河南</th><th class="num">羽曳野</th><th class="num">富田林</th><th class="num">しまやん</th><th class="num">合計</th><th>荷姿</th><th class="num">金額 円</th></tr></thead><tbody></tbody></table></div>
+  <p class="hint">圃場ごとに「その圃場のパターン × 面積」で出して、エリア別に足してる。袋数は圃場ごとに切り上げ。まとめて買って小分けするなら「正味量」で見る。</p>
+</section>
+
+</div>
+
 <script>
 const API_URL='https://script.google.com/macros/s/AKfycbzVVr8ECkoex4-V2bQz1qeFiucON0LiAcH8lcAlPry-wsxuL9pepXLQSjZEVwZ7SAiCuw/exec';
 const MAPS_KEY='AIzaSyC9ansyC5Z3PacdvFoigWb95z_eNhieYQg';
@@ -389,21 +554,41 @@ function drawAllFields(){
   });
 }
 function fitAllFields(){ const b=new google.maps.LatLngBounds(); let n=0; FIELDS.forEach(f=>{ if(f.outline) f.outline.forEach(p=>{ b.extend({lat:+p[0],lng:+p[1]}); n++; }); }); if(n) regMap.fitBounds(b,60); }
-let viewOnly=false;
-function showScreen(k){ $('scr-reg').hidden=k!=='reg'; $('scr-design').hidden=k!=='design'; $('lock').hidden=k!=='design'||viewOnly; $('nav-reg').setAttribute('aria-pressed',k==='reg'); $('nav-view').setAttribute('aria-pressed',k==='design'&&viewOnly); $('nav-design').setAttribute('aria-pressed',k==='design'&&!viewOnly); $('title').textContent=k==='reg'?'圃場':((regSel?regSel.n:'')+(viewOnly?'　設計図':'　設計中')); document.body.classList.toggle('viewonly',k==='design'&&viewOnly);
-  setTimeout(()=>{ if(k==='reg'&&regMap) google.maps.event.trigger(regMap,'resize'); if(k==='design'&&planMap){ google.maps.event.trigger(planMap,'resize'); planOv&&planOv.redraw(); } },50); }
+let viewOnly=false, SCREEN='home';
+const AREAS_H=['八尾','河南','羽曳野','富田林','しまやん']; let homeArea='all', bulkMode=false, bulkSel=new Set();
+// 画面：home（圃場一覧）／圃場の4画面 reg=外周・view=設計図・design=設計する・mat=資材／matreg=資材登録・order=発注まとめ
+function showScreen(k){ SCREEN=k; const fieldCtx=['reg','view','design','mat'].includes(k); const isDesign=(k==='view'||k==='design');
+  $('scr-home').hidden=k!=='home'; $('scr-reg').hidden=k!=='reg'; $('scr-design').hidden=!isDesign; $('scr-mat').hidden=k!=='mat'; $('scr-shizai').hidden=!(k==='matreg'||k==='order');
+  $('back').hidden=k==='home'; $('fnav').hidden=!fieldCtx; $('lock').hidden=k!=='design';
+  viewOnly=k==='view'; document.body.classList.toggle('viewonly',viewOnly);
+  ['reg','view','design','mat'].forEach(x=>$('nav-'+x).setAttribute('aria-pressed',k===x));
+  const has=!!(regSel&&regSel.full&&regSel.full.outline&&regSel.full.outline.length>=3); $('nav-view').disabled=$('nav-design').disabled=!has;
+  $('title').textContent=k==='home'?'圃場一覧':k==='matreg'?'資材登録':k==='order'?'発注まとめ':(regSel?regSel.n+(k==='reg'?'　外周':k==='view'?'　設計図':k==='design'?'　設計する':'　資材'):'');
+  refreshCtx();
+  if(k==='matreg'&&window.szShow) window.szShow('reg'); if(k==='order'&&window.szShow) window.szShow('order'); if(k==='mat'&&window.szRenderField&&regSel) window.szRenderField(regSel.id,'sz-one');
+  if(k==='home') renderList(); window.scrollTo(0,0);
+  setTimeout(()=>{ if(k==='reg'&&regMap) google.maps.event.trigger(regMap,'resize'); if(isDesign&&planMap){ google.maps.event.trigger(planMap,'resize'); planOv&&planOv.redraw(); } },50); }
+function refreshCtx(){ const fieldCtx=['reg','view','design','mat'].includes(SCREEN); $('ctxArea').hidden=!(fieldCtx&&regSel); if(fieldCtx&&regSel){ const a=window.szAreaOf?window.szAreaOf(regSel.id):''; const pt=window.szPatOf?window.szPatOf(regSel.id):null; $('ctxArea').textContent=(a?('エリア：'+a):'エリア未設定')+(pt&&pt.id?('　パターン：'+pt.name):'')+((window.szIsTarget&&!window.szIsTarget(regSel.id))?'　対象外':''); } }
+window.uneRefreshCtx=()=>{ refreshCtx(); if(SCREEN==='home') renderList(); }; window.uneShow=k=>showScreen(k); window.uneRenderList=()=>{ if(SCREEN==='home') renderList(); };
+window.uneAreaOf=id=>{ const f=FIELDS.find(x=>x.id===+id); return (f&&f.outline&&f.outline.length>=3)?Math.abs(areaLL(f.outline))/100:0; };
+window.uneApi=(a,p)=>api(a,p);
+$('back').onclick=()=>{ if(!confirmLeave()) return; dirty=false; showScreen('home'); };
+$('go-matreg').onclick=()=>showScreen('matreg'); $('go-order').onclick=()=>showScreen('order');
 $('nav-reg').onclick=()=>{ if(!confirmLeave()) return; dirty=false; showScreen('reg'); };
-$('nav-design').onclick=()=>showScreen('design');
+$('nav-view').onclick=()=>{ if(!regSel||!regSel.full) return; if(SCREEN==='design'&&!confirmLeave()) return; const f=regSel.full; if(f.outline&&f.outline.length>=3) openDesign(regSel,f.outline,f.design,f.designVer||0,true); };
+$('nav-design').onclick=()=>{ if(!regSel||!regSel.full) return; const f=regSel.full; if(f.outline&&f.outline.length>=3){ if(SCREEN==='design') return; openDesign(regSel,f.outline,f.design,f.designVer||0,false); } };
+$('nav-mat').onclick=()=>{ if(SCREEN==='design'&&!confirmLeave()) return; showScreen('mat'); };
 
 async function boot(){
   try{ const d=await api('init',{}); FIELDS=d.fields; DESIGNED=d.designed||{}; SETTINGS=d.settings||{}; }catch(e){ $('lgErr').textContent=e.message; showLogin(e.message); return; }
   if(SETTINGS['株間cm']) $('sp').value=SETTINGS['株間cm']; if(SETTINGS['基肥kg_10a']) $('fert').value=SETTINGS['基肥kg_10a']; if(SETTINGS['明渠幅cm']) $('dw').value=SETTINGS['明渠幅cm']; if(SETTINGS['畝を切る空きcm']) $('dg').value=SETTINGS['畝を切る空きcm']; if(SETTINGS['外周空きm']!==undefined&&SETTINGS['外周空きm']!=='') $('setback').value=SETTINGS['外周空きm'];
-  renderList();
   if(!regMap){ regMap=new google.maps.Map($('map'),Object.assign(mapOpts(HOME,16,true),{scrollwheel:false})); regOv=makeOverlay(regMap,drawReg); installWheel($('map'),regMap);
     regMap.addListener('click',e=>{ if(!regSel||regDragging||!regEdit) return; if(!ORIGIN) ORIGIN={lat:e.latLng.lat(),lng:e.latLng.lng()}; pts.push(toLocal({lat:e.latLng.lat(),lng:e.latLng.lng()})); updateReg(); });
     // 外周の点をドラッグ
     attachDrag($('map'),regMap,()=>regOv,(el)=>{ if(!regEdit) return null; const p=el.closest('.rpt'); return p?{i:+p.dataset.i}:null; },(d,ll)=>{ pts[d.i]=toLocal(ll); updateReg(); },()=>{ regDragging=false; }); }
-  drawAllFields(); fitAllFields(); showScreen('reg');
+  window.FIELDS_ALL=FIELDS; window.DESIGNED_ALL=DESIGNED;
+  try{ const m=await api('matGet',{}); if(window.szInit) window.szInit(m.mat||null,m.ver||0); }catch(e){ $('matstat').textContent='資材：読み込めず '+e.message; $('matstat').className='matstat err'; }
+  drawAllFields(); fitAllFields(); showScreen('home');
 }
 let regDragging=false;
 // 共通：オーバーレイ上のハンドルをドラッグ。ドラッグ中はマップを動かさない
@@ -419,22 +604,36 @@ function pixelToLatLng(map,ov,div,e){ const pr=ov.getProjection(); if(!pr) retur
 
 // ===== 圃場登録 =====
 function renderList(){
-  const q=($('q').value||'').trim(); let html='',g=null;
-  for(const f of FIELDS){ if(q&&!f.n.includes(q)) continue; if(f.g!==g){g=f.g; html+=`<div class="g">${esc(g)}</div>`;}
-    html+=`<button type="button" data-id="${f.id}" aria-pressed="${regSel&&regSel.id===f.id}"><span>${esc(f.n)}${f.hasOutline?' <span class="ok">登録済</span>':''}${DESIGNED[f.id]?' <span class="ok">設計済</span>':''}</span><span class="a">${f.a.toFixed(2)}a</span></button>`; }
-  $('flist').innerHTML=html;
-  $('flist').querySelectorAll('button').forEach(b=>b.onclick=()=>selectField(+b.dataset.id));
+  const q=($('q').value||'').trim(); const box=$('flist'); let html='', g=null; const areaOf=id=>window.szAreaOf?window.szAreaOf(id):''; const isT=id=>window.szIsTarget?window.szIsTarget(id):true; const offR=id=>window.szOffReason?window.szOffReason(id):'';
+  const counts={all:0,none:0,off:0}; AREAS_H.forEach(a=>counts[a]=0); FIELDS.forEach(f=>{ if(!isT(f.id)){ counts.off++; return; } counts.all++; const a=areaOf(f.id); if(a) counts[a]++; else counts.none++; });
+  $('areaChips').innerHTML=[['all','対象 全部'],...AREAS_H.map(a=>[a,a]),['none','未設定'],['off','対象外']].map(([k,l])=>`<button type="button" data-a="${k}" aria-pressed="${homeArea===k}">${l} <small>${counts[k]}</small></button>`).join('');
+  $('areaChips').querySelectorAll('button').forEach(b=>b.onclick=()=>{ homeArea=b.dataset.a; renderList(); });
+  const ord=f=>{ const a=areaOf(f.id); return a?AREAS_H.indexOf(a):99; }; const list=FIELDS.slice().sort((x,y)=>ord(x)-ord(y)||x.g.localeCompare(y.g,'ja')||x.n.localeCompare(y.n,'ja'));
+  const shown=[]; for(const f of list){ if(q&&!f.n.includes(q)) continue; const a=areaOf(f.id); const t=isT(f.id); if(homeArea==='off'){ if(t) continue; } else { if(!t) continue; if(homeArea!=='all'&&(homeArea==='none'?!!a:a!==homeArea)) continue; } shown.push(f.id); if(f.g!==g){g=f.g; html+=`<div class="g">${esc(g)}</div>`;}
+    const pt=(t&&window.szPatOf)?window.szPatOf(f.id):null;
+    html+=`<button type="button" data-id="${f.id}" class="${t?'':'isoff'}" aria-pressed="${regSel&&regSel.id===f.id}"><span>${bulkMode?`<input type="checkbox" data-ck="${f.id}" ${bulkSel.has(f.id)?'checked':''}>`:''}${esc(f.n)}${f.hasOutline?' <span class="ok">登録済</span>':''}${DESIGNED[f.id]?' <span class="dz">設計済</span>':''}${t?'':` <span class="off">対象外・${esc(offR(f.id))}</span>`}${(pt&&pt.own)?` <span class="ar" style="color:var(--head);border-color:var(--head)">${esc(pt.name)}</span>`:''}<span class="ar ${a?'':'none'}">${a||'エリア未設定'}</span></span><span class="a">${f.a.toFixed(2)}a</span></button>`; }
+  box.innerHTML=html||'<p class="note">該当なし</p>';
+  box.querySelectorAll('button[data-id]').forEach(b=>b.onclick=()=>{ if(bulkMode){ const id=+b.dataset.id; bulkSel.has(id)?bulkSel.delete(id):bulkSel.add(id); renderList(); return; } selectField(+b.dataset.id); });
+  $('bulkbar').hidden=!bulkMode; $('bulkBtn').setAttribute('aria-pressed',bulkMode); $('bulkN').textContent=bulkMode?`${bulkSel.size}枚 選択中`:''; renderList.shown=shown;
+  if(window.szPatterns){ const cur=$('bulkPat').value; $('bulkPat').innerHTML='<option value="">エリアの基本に戻す</option>'+window.szPatterns().map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join(''); if([...$('bulkPat').options].some(o=>o.value===cur)) $('bulkPat').value=cur; }
 }
 $('q').addEventListener('input',renderList);
+$('bulkBtn').onclick=()=>{ bulkMode=!bulkMode; if(!bulkMode) bulkSel.clear(); renderList(); };
+$('bulkAll').onclick=()=>{ (renderList.shown||[]).forEach(id=>bulkSel.add(id)); renderList(); };
+$('bulkNone').onclick=()=>{ bulkSel.clear(); renderList(); };
+$('bulkOn').onclick=()=>{ if(!bulkSel.size||!window.szSetTarget) return; window.szSetTarget([...bulkSel],true); bulkSel.clear(); renderList(); };
+$('bulkOff').onclick=()=>{ if(!bulkSel.size||!window.szSetTarget) return; window.szSetTarget([...bulkSel],false,$('bulkReason').value); bulkSel.clear(); renderList(); };
+$('bulkPatBtn').onclick=()=>{ if(!bulkSel.size||!window.szSetPattern) return; window.szSetPattern([...bulkSel],$('bulkPat').value); bulkSel.clear(); renderList(); };
 async function selectField(id){
-  regSel=FIELDS.find(f=>f.id===id); renderList(); $('reg-name').textContent='読み込み中…';
+  if(SCREEN==='design'&&!confirmLeave()) return; dirty=false;
+  regSel=FIELDS.find(f=>f.id===id); if(!regSel) return; $('reg-name').textContent='読み込み中…'; $('title').textContent=regSel.n;
   try{ const f=await api('getField',{fieldId:id}); regSel.full=f;
     if(f.outline&&f.outline.length>=3){ ORIGIN=centroidLL(f.outline); pts=f.outline.map(p=>toLocal({lat:p[0],lng:p[1]})); const b=new google.maps.LatLngBounds(); f.outline.forEach(q=>b.extend({lat:+q[0],lng:+q[1]})); regMap.fitBounds(b,80); }
     else { ORIGIN=null; pts=[]; if(f.lat&&f.lng){ regMap.setCenter({lat:+f.lat,lng:+f.lng}); regMap.setZoom(18); } }
     regEdit=!(f.outline&&f.outline.length>=3);
-    $('nav-design').disabled=!(f.outline&&f.outline.length>=3);
-  }catch(e){ $('reg-name').textContent=e.message; }
+  }catch(e){ alert(e.message); return; }
   drawAllFields(); updateReg();
+  const f=regSel.full; if(f.outline&&f.outline.length>=3) openDesign(regSel,f.outline,f.design,f.designVer||0,true); else showScreen('reg');
 }
 // 保存前の下書き（打った角）は、10分触らんかったら消す。1分前に案内
 const DRAFT_MIN=10; let draftTimer=null, draftWarn=null, draftNote='';
@@ -446,7 +645,7 @@ function armDraft(){ clearTimeout(draftTimer); clearTimeout(draftWarn); draftNot
 function paintRegHint(){ $('reg-hint').textContent=regHintText()+draftNote; }
 function regHintText(){ return !regSel?'左の一覧か地図の枠から圃場を選ぶ。地図は住所検索か📍で移動。':regEdit?'航空写真で圃場の角を順にタップ。点はドラッグで直せる。終わったら「保存」。':((regSel.full&&regSel.full.outline&&regSel.full.outline.length>=3)?'登録済み。外周を直すときは「✏️ 外周を直す」。':'未登録。「✏️ 外周を直す」を押して角をタップ。'); }
 function updateReg(){ armDraft();
-  $('reg-name').textContent=regSel?`${regSel.g}／${regSel.n}（アグリノート ${regSel.a.toFixed(2)}a）`:'圃場を選んでください';
+  $('reg-name').textContent=regSel?`${regSel.g}／${regSel.n}（アグリノート ${regSel.a.toFixed(2)}a）`:'圃場一覧から圃場を選んでください';
   const el=$('reg-area');
   if(regSel&&pts.length>=3){ const a=Math.abs(area(pts))/100, d=a-regSel.a, pct=regSel.a?d/regSel.a*100:0; const per=plen(pts.concat([pts[0]])); el.textContent=`面積 ${a.toFixed(2)}a（${Math.round(a*100).toLocaleString()}㎡・外周 ${per.toFixed(0)}m）／ アグリノート ${regSel.a.toFixed(2)}a ／ 差 ${d>=0?'+':''}${d.toFixed(2)}a（${pct>=0?'+':''}${pct.toFixed(1)}%）`; el.className='areacheck'+(Math.abs(pct)>2?' bad':''); }
   else { const L=plen(pts); el.textContent=regSel?`${pts.length}点（あと${Math.max(0,3-pts.length)}点で面積が出る）${L?`　ここまで ${L.toFixed(1)}m`:''}`:''; el.className='areacheck'; }
@@ -454,7 +653,6 @@ function updateReg(){ armDraft();
   $('editOutline').hidden=!(regSel&&!regEdit); $('cancelEdit').hidden=!(regSel&&regEdit&&has);
   $('undo').hidden=$('clear').hidden=!(regSel&&regEdit); $('save').hidden=!(regSel&&regEdit);
   $('save').disabled=!(regSel&&regEdit&&pts.length>=3);
-  $('goView').hidden=!(has&&!regEdit&&DESIGNED[regSel.id]); $('goDesign').hidden=!(has&&!regEdit);
   paintRegHint();
   $('map').classList.toggle('draw',!!(regSel&&regEdit));
   regOv&&regOv.redraw();
@@ -469,21 +667,17 @@ function drawReg({P,k}){
 }
 $('editOutline').onclick=()=>{ regEdit=true; updateReg(); };
 $('cancelEdit').onclick=()=>{ const f=regSel.full; ORIGIN=centroidLL(f.outline); pts=f.outline.map(p=>toLocal({lat:p[0],lng:p[1]})); regEdit=false; updateReg(); };
-$('goView').onclick=()=>{ if(!confirmLeave()) return; const f=regSel.full; openDesign(regSel,f.outline,f.design,f.designVer||0,true); };
-$('goDesign').onclick=()=>{ if(!confirmLeave()) return; const f=regSel.full; openDesign(regSel,f.outline,f.design,f.designVer||0,false); };
 $('undo').onclick=()=>{ pts.pop(); if(!pts.length) ORIGIN=null; updateReg(); };
 $('clear').onclick=()=>{ pts=[]; ORIGIN=null; updateReg(); };
 $('save').onclick=async()=>{ if(!regSel||pts.length<3) return; $('save').disabled=true; $('save').textContent='保存中…';
   try{ const outline=pts.map(p=>{ const ll=toLatLng(p); return [+ll.lat.toFixed(7),+ll.lng.toFixed(7)]; }); await api('saveOutline',{fieldId:regSel.id,outline});
-    regSel.hasOutline=true; regSel.outline=outline; regSel.full=Object.assign(regSel.full||{},{outline}); regEdit=false; renderList(); drawAllFields(); updateReg();
+    regSel.hasOutline=true; regSel.outline=outline; regSel.full=Object.assign(regSel.full||{},{outline}); regEdit=false; drawAllFields(); updateReg(); showScreen('reg');
   }catch(e){ alert('保存できませんでした：'+e.message); } finally{ $('save').textContent='保存'; } };
 $('addrGo').onclick=()=>{ const q=$('addr').value.trim(); if(!q) return; new google.maps.Geocoder().geocode({address:q,region:'jp'},(res,st)=>{ if(st==='OK'&&res[0]){ regMap.setCenter(res[0].geometry.location); regMap.setZoom(17); } else alert('見つかりませんでした'); }); };
 $('addr').addEventListener('keydown',e=>{ if(e.key==='Enter') $('addrGo').click(); });
 $('allf').onclick=fitAllFields;
 $('gps').onclick=()=>{ if(!navigator.geolocation) return; navigator.geolocation.getCurrentPosition(p=>{ regMap.setCenter({lat:p.coords.latitude,lng:p.coords.longitude}); regMap.setZoom(18); },()=>alert('位置情報が取れませんでした')); };
-$('nfAdd').onclick=async()=>{ const name=$('nfName').value.trim(); if(!name) return; try{ const r=await api('addField',{name,area:+$('nfArea').value||0}); FIELDS.push({id:r.id,g:'その他',n:name,a:+$('nfArea').value||0,hasOutline:false}); $('nfName').value=''; $('nfArea').value=''; renderList(); selectField(r.id); }catch(e){ alert(e.message); } };
-$('nav-design').onclick=()=>{ if(!confirmLeave()) return; const f=regSel&&regSel.full; if(f&&f.outline&&f.outline.length>=3) openDesign(regSel,f.outline,f.design,f.designVer||0,false); };
-$('nav-view').onclick=async()=>{ if(!regSel) return; if(!confirmLeave()) return; try{ const f=await api('getField',{fieldId:regSel.id}); regSel.full=f; if(f.outline&&f.outline.length>=3) openDesign(regSel,f.outline,f.design,f.designVer||0,true); }catch(e){ alert(e.message); } };
+$('nfAdd').onclick=async()=>{ const name=$('nfName').value.trim(); if(!name) return; try{ const r=await api('addField',{name,area:+$('nfArea').value||0}); FIELDS.push({id:r.id,g:'その他',n:name,a:+$('nfArea').value||0,hasOutline:false}); $('nfName').value=''; $('nfArea').value=''; selectField(r.id); }catch(e){ alert(e.message); } };
 
 // ===== 畝立て設計 =====
 let POLY=[], zones=[], ditches=[], measures=[], edgeSb={}, mode='ridge', drawPts=[], selZ=-1, selD=-1, selM=-1, selE=-1, showLabels=true, snapOn=true, locked=true, designVer=0;
@@ -581,7 +775,7 @@ function openDesign(field, outline, design, ver, view){
   designVer=ver||0; lastSaved=design?JSON.parse(JSON.stringify(design)):null; dirty=false; loadDesignInto(design);
   locked=viewOnly||!!(design&&design.zones&&design.zones.length); drawPts=[]; selZ=selD=selM=selE=-1; selPt=null; mode=locked?'ridge':'main';
   hist=[]; histFid=field.id;
-  $('nav-design').disabled=false; $('nav-view').disabled=false; showScreen('design');
+  showScreen(viewOnly?'view':'design');
   if(!planMap){ planMap=new google.maps.Map($('plan'),Object.assign(mapOpts(ORIGIN,18,true),{scrollwheel:false})); planOv=makeOverlay(planMap,drawPlan);
     planMap.addListener('click',e=>{ if(planDragging) return; const pm=toLocal({lat:e.latLng.lat(),lng:e.latLng.lng()}); onMapTap(pm); });
     attachDrag($('plan'),planMap,()=>planOv,planHit,planMove,planEnd);
@@ -693,7 +887,7 @@ function loadDesignInto(design){ applyDesign(design); }
 function queueSave(){ dirty=true; updateSaveUI(); }
 function updateSaveUI(){ const b=$('regBtn'), r=$('revertBtn'); if(!b) return; b.disabled=saving||!dirty; r.disabled=saving||!dirty; b.classList.toggle('dirty',dirty); b.textContent=saving?'登録中…':dirty?'設計を登録（未登録の変更あり）':'設計を登録（登録済）'; }
 async function doSave(){ if(saving||!regSel) return; saving=true; updateSaveUI();
-  try{ const d=serDesign(); const r=await api('saveDesign',{fieldId:regSel.id,design:d,baseVer:designVer}); designVer=r.ver; DESIGNED[regSel.id]=new Date().toISOString(); lastSaved=JSON.parse(JSON.stringify(d)); if(regSel.full) { regSel.full.design=lastSaved; regSel.full.designVer=designVer; } dirty=false; $('savebar').textContent='登録済 '+new Date().toTimeString().slice(0,5); $('savebar').className='savebar'; }
+  try{ const d=serDesign(); const r=await api('saveDesign',{fieldId:regSel.id,design:d,baseVer:designVer,ridgeM:lastLen.ridge,areaA:lastLen.area}); designVer=r.ver; DESIGNED[regSel.id]={updated:new Date().toISOString(),ridgeM:lastLen.ridge,areaA:lastLen.area}; lastSaved=JSON.parse(JSON.stringify(d)); if(regSel.full) { regSel.full.design=lastSaved; regSel.full.designVer=designVer; } dirty=false; $('savebar').textContent='登録済 '+new Date().toTimeString().slice(0,5); $('savebar').className='savebar'; }
   catch(e){ alert('登録できませんでした：'+e.message); }
   finally{ saving=false; updateSaveUI(); } }
 function revertDesign(){ if(!dirty) return; if(!confirm('登録していない変更を捨てて、最後に登録した状態に戻しますか？')) return; loadDesignInto(lastSaved); dirty=false; drawPts=[]; selZ=selD=selM=-1; selPt=null; mode='ridge'; render(false); updateSaveUI(); }
@@ -701,7 +895,7 @@ function confirmLeave(){ return !dirty || confirm('登録していない変更�
 window.addEventListener('beforeunload',e=>{ if(dirty||saving){ e.preventDefault(); e.returnValue=''; } });
 
 // ===== 描画 =====
-let lays=[], WPcur=[];
+let lays=[], WPcur=[], lastLen={ridge:0,area:0};
 const MN={futago:'ふたごちゃん',koune:'こうねちゃん',daichi:'だい地くん'};
 function render(save,fromUndo){
   if(save!==false&&!viewOnly) queueSave(); else updateSaveUI();
@@ -724,13 +918,13 @@ function render(save,fromUndo){
   $('hint').textContent= mode==='main'||mode==='head' ? `${mode==='main'?'本畝':'枕畝'}：角を4つ順にタップ（${drawPts.length}/4）。1→2の向きに畝が走る${zsnapOn?'（外周の辺に平行/直角で揃う）':''}。`
     : mode==='meas' ? `計測：2点をタップ→左の「確定」で残す（${Math.min(drawPts.length,2)}/2）。消すときは線を選んで「選択を削除」。`
     : mode==='dA'||mode==='dB' ? `明渠（畝立て${mode==='dA'?'前':'後'}）：線を順にタップして、左の「確定」（${drawPts.length}点）。2点目からは${ditchRef[mode==='dA'?'A':'B']==='edge'?'外周の辺':'近い畝'}に平行／直角にそろう。`
-    : viewOnly ? '設計図（閲覧）。ドラッグで移動、ピンチで拡大。まとまりをタップで本数と距離を確認。直すときは上の「設計する」。' : locked ? 'ロック中。図形は動かない。ドラッグで移動、ピンチで拡大。直すときは上の🔒を押す。' : '編集中。畝タップでオン／オフ、点はドラッグ（左下のパッドで10cm刻み）。選択中のまとまりは中をドラッグで丸ごと移動。終わったら上の🔓でロック。';
+    : viewOnly ? '設計図（見るだけ）。ドラッグで移動、ピンチで拡大。まとまりをタップで本数と距離。直すときは上の「設計する」。' : locked ? 'ロック中。図形は動かない。ドラッグで移動、ピンチで拡大。直すときは上の🔒を押す。' : '編集中。畝タップでオン／オフ、点はドラッグ（左下のパッドで10cm刻み）。選択中のまとまりは中をドラッグで丸ごと移動。終わったら上の🔓でロック。';
   WPcur=workPoly(); lays=zones.map(zz=>layoutZone(zz,minlen,sp,WPcur,dgap));
   if(document.activeElement!==$('zn')){ const L=lays[selZ]; $('zn').value=L?L.n:''; }
   if(selZ>=0&&document.activeElement!==$('zgap')){ const g=zoneGapInfo(zones[selZ],selZ); $('zgap').value=g&&g.side?g.gap.toFixed(1):''; $('zgap').disabled=locked||!(g&&g.side); }
   let nM=0,lenM=0,nH=0,lenH=0,plants=0,pieces=0,skipped=0,manualOff=0;
   lays.forEach((L,i)=>{ const kind=zones[i].kind; for(const r of L.ridges){ if(r.ok){ if(kind==='main') nM++; else nH++; for(const pc of r.pieces){ if(kind==='main') lenM+=pc.len; else lenH+=pc.len; plants+=pc.plants; pieces++; } } else if(!r.auto) skipped++; else manualOff++; } });
-  const dTotal=ditches.reduce((s,d)=>s+plen(d.pts),0); const A=Math.abs(area(POLY));
+  const dTotal=ditches.reduce((s,d)=>s+plen(d.pts),0); const A=Math.abs(area(POLY)); lastLen={ridge:Math.round(lenM+lenH),area:+(A/100).toFixed(2)};
   $('s-area').textContent=(A/100).toFixed(1); $('s-n').textContent=nM; $('s-len').textContent=Math.round(lenM).toLocaleString();
   $('s-hn').textContent=nH; $('s-hlen').textContent=Math.round(lenH).toLocaleString(); $('s-ditch').textContent=Math.round(dTotal).toLocaleString();
   $('s-mulch').textContent=Math.ceil((lenM+lenH+pieces*2)/(+SETTINGS['マルチ巻m']||200)); $('s-plants').textContent=plants.toLocaleString(); $('s-fert').textContent=Math.round(A/1000*fertRate);
@@ -803,6 +997,212 @@ function drawPlan({P,k}){
     if(drawPts.length>=2){ const [a,b]=drawPts; const L=Math.hypot(b[0]-a[0],b[1]-a[1]); const q=Pt([(a[0]+b[0])/2,(a[1]+b[1])/2]); s+=T([q[0],q[1]-8],mode==='meas'?`${L.toFixed(1)}m（未確定）`:(mode==='main'||mode==='head')?`畝の向き ${L.toFixed(0)}m`:`${L.toFixed(1)}m`,{fs:11,bold:true,fill:mode==='meas'?'#ffe14d':'#fff',sw:3}); } }
   return s;
 }
+
+// ===== 資材（基本施肥設計）：本番はシートの「資材設計」に保存 =====
+window.szInit=function(initMat,initVer){ if(window.__szReady) return; window.__szReady=true;
+const FIELDS=window.FIELDS_ALL;
+const AREAS=['八尾','河南','羽曳野','富田林','しまやん'];
+const AREA_OF_GROUP={'八尾圃場':'八尾','河南町圃場':'河南','羽曳野圃場':'羽曳野','富田林圃場':'富田林','和歌山':'しまやん'};
+const CATS0=['肥料（粒剤）','農薬（粒剤・粉剤・液剤）','土壌改良剤','除草剤','バイオスティミュラント資材','その他資材','生分解性マルチ'];
+let CATS=CATS0.slice();
+const BASIS={'10a':'10aあたり','ridge100':'畝100mあたり','spray':'散布（水量÷希釈）','field':'圃場1枚'};
+const UNITS=['kg','g','L','mL','本','枚','袋'];
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let uid=1; const nid=()=>'i'+(uid++)+'_'+Date.now().toString(36);
+const fmt=(v,d)=>Number(v).toLocaleString('ja-JP',{maximumFractionDigits:d===undefined?1:d});
+
+// ---- データ ----
+// S.patterns: [{id,name,memo}]  設計パターン
+// S.areaPat: {エリア: patternId}  エリアの基本パターン
+// S.items: [{id,cat,name,maker,basis,unit,water,dil,pack,packUnit,price,memo,rates:{patternId:{rate}}}]
+// S.fields: {圃場ID:{area,target,offReason,pat,measA,ridgeM,ov:{itemId:{qty,why}}}}
+let S={v:3,patterns:null,areaPat:{},items:null,fields:{},ui:{pat:null,view:'area',basis:'meas',scope:'all',ounit:'pack'}};
+function seedCatalog(pids){ const all=pids; const kanan=S.patterns.filter(p=>p.name==='河南').map(p=>p.id); const notKanan=all.filter(id=>!kanan.includes(id));
+  const mk=(o,ids,rate)=>{ const it=Object.assign({id:nid(),maker:'',memo:'',price:0,ex:true,rates:{}},o); ids.forEach(id=>it.rates[id]={rate}); return it; };
+  return [ mk({cat:'肥料（粒剤）',name:'例：基肥',basis:'10a',unit:'kg',pack:20,packUnit:'袋'},all,80),
+    mk({cat:'土壌改良剤',name:'例：土壌改良剤',basis:'10a',unit:'kg',pack:20,packUnit:'袋'},all,100),
+    mk({cat:'農薬（粒剤・粉剤・液剤）',name:'例：殺虫粒剤',basis:'10a',unit:'kg',pack:3,packUnit:'袋'},all,6),
+    mk({cat:'除草剤',name:'例：除草剤（液）',basis:'spray',unit:'L',water:100,dil:100,pack:0.5,packUnit:'本'},all,0),
+    mk({cat:'生分解性マルチ',name:'生分解性マルチ 黒（例）',basis:'ridge100',unit:'本',pack:1,packUnit:'本',memo:'1本200m → 100mあたり0.5本'},notKanan,0.5),
+    mk({cat:'生分解性マルチ',name:'生分解性マルチ 白黒（例）',basis:'ridge100',unit:'本',pack:1,packUnit:'本',memo:'1本200m → 100mあたり0.5本'},kanan,0.5) ]; }
+// 旧データの引き継ぎ：エリア名のパターンを作り、エリアごとの量をそのパターンに移す。圃場はエリアと同じパターン
+function migrate(d){
+  if(!d.patterns){ d.patterns=AREAS.map(a=>({id:'p_'+a,name:a,memo:'エリア'+a+'の基本'})); d.areaPat={}; AREAS.forEach(a=>d.areaPat[a]='p_'+a); }
+  if(d.items){ d.items.forEach(it=>{ if(!it.rates){ it.rates={}; if(it.areas){ AREAS.forEach(a=>{ if(it.areas[a]) it.rates['p_'+a]={rate:+it.areas[a].rate||0}; }); } delete it.areas; } }); }
+  else if(d.master&&Object.keys(d.master).length){ const map={}; d.items=[]; AREAS.forEach(a=>(d.master[a]||[]).forEach(o=>{ const key=o.cat+'|'+o.name; let it=map[key]; if(!it){ it=Object.assign({},o,{rates:{}}); delete it.rate; delete it.areas; it.maker=it.maker||''; map[key]=it; d.items.push(it); } it.rates['p_'+a]={rate:+o.rate||0}; })); }
+  delete d.master; d.v=3; return d; }
+function load(){ let d=initMat;
+  if(d&&(d.items||d.master||d.patterns)){ S=migrate(d); } else { S.patterns=AREAS.map(a=>({id:'p_'+a,name:a,memo:'エリア'+a+'の基本'})); AREAS.forEach(a=>S.areaPat[a]='p_'+a); }
+  if(!S.ui) S.ui={}; S.ui=Object.assign({pat:null,view:'area',basis:'meas',scope:'all',ounit:'pack'},S.ui); if(!S.fields) S.fields={}; if(!S.areaPat) S.areaPat={};
+  if(!S.items) S.items=[];
+  if(!S.ui.pat||!S.patterns.find(p=>p.id===S.ui.pat)) S.ui.pat=S.patterns[0]&&S.patterns[0].id;
+  if(S.cats&&S.cats.length) CATS=S.cats; else S.cats=CATS; }
+let matVer=initVer||0, saveT=null, saving=false, pendingAgain=false;
+function save(){ clearTimeout(saveT); setStat('保存待ち…','busy'); saveT=setTimeout(flush,1200); }
+async function flush(){ saveT=null; if(saving){ pendingAgain=true; return; } saving=true; setStat('保存中…','busy');
+  try{ const r=await window.uneApi('matSave',{mat:S,baseVer:matVer}); matVer=r.ver; setStat('保存済 '+new Date().toTimeString().slice(0,5),''); }
+  catch(e){ setStat('保存できず：'+e.message,'err'); if(/先に保存/.test(e.message)){ try{ const g=await window.uneApi('matGet',{}); if(g.mat){ S=migrate(g.mat); matVer=g.ver; if(S.cats&&S.cats.length) CATS=S.cats; render(); if(window.uneRenderList) window.uneRenderList(); setStat('他の人の保存を読み直した。もう一回やり直して','err'); } }catch(e2){} } }
+  finally{ saving=false; if(pendingAgain){ pendingAgain=false; flush(); } } }
+function setStat(t,cls){ const el=document.getElementById('matstat'); if(!el) return; el.textContent='資材：'+t; el.className='matstat '+(cls||''); }
+window.addEventListener('beforeunload',e=>{ if(saveT||saving){ e.preventDefault(); e.returnValue=''; } });
+const patById=id=>S.patterns.find(p=>p.id===id);
+const patName=id=>{ const p=patById(id); return p?p.name:'（なし）'; };
+function itemsOf(pid){ return S.items.filter(i=>i.rates&&i.rates[pid]).map(i=>Object.assign({},i,{rate:+i.rates[pid].rate||0})); }
+
+// ---- 圃場の状態 ----
+function fstate(f){ if(!S.fields[f.id]) S.fields[f.id]={}; return S.fields[f.id]; }
+function areaOf(f){ const st=fstate(f); return st.area||AREA_OF_GROUP[f.g]||''; }
+const OFF_REASONS=['休耕','候補地','他作物'];
+function isTarget(f){ return fstate(f).target!==false; }
+function patOf(f){ const st=fstate(f); if(st.pat&&patById(st.pat)) return st.pat; const a=areaOf(f); return a?(S.areaPat[a]||''):''; }
+function patIsOwn(f){ const st=fstate(f); return !!(st.pat&&patById(st.pat)); }
+window.szIsTarget=id=>{ const f=FIELDS.find(x=>x.id===+id); return f?isTarget(f):true; };
+window.szOffReason=id=>{ const f=FIELDS.find(x=>x.id===+id); return f?(fstate(f).offReason||''):''; };
+window.szSetTarget=(ids,on,reason)=>{ ids.forEach(id=>{ const f=FIELDS.find(x=>x.id===+id); if(!f) return; const st=fstate(f); st.target=!!on; if(on) delete st.offReason; else st.offReason=reason||OFF_REASONS[0]; }); save(); };
+window.szAreaOf=id=>{ const f=FIELDS.find(x=>x.id===+id); return f?areaOf(f):''; };
+window.szPatOf=id=>{ const f=FIELDS.find(x=>x.id===+id); return f?{id:patOf(f),name:patName(patOf(f)),own:patIsOwn(f)}:null; };
+window.szPatterns=()=>S.patterns.map(p=>({id:p.id,name:p.name}));
+window.szSetPattern=(ids,pid)=>{ ids.forEach(id=>{ const f=FIELDS.find(x=>x.id===+id); if(!f) return; const st=fstate(f); if(pid) st.pat=pid; else delete st.pat; }); save(); };
+function areaA(f){ const st=fstate(f); if(st.measA) return +st.measA; const real=window.uneAreaOf?window.uneAreaOf(f.id):0; return real>0?real:(+f.a||0); }
+function designRidge(f){ const d=window.DESIGNED_ALL&&window.DESIGNED_ALL[f.id]; return d&&d.ridgeM>0?Math.round(d.ridgeM):null; }
+function ridgeM(f){ const st=fstate(f); if(st.ridgeM!==undefined&&st.ridgeM!=='') return +st.ridgeM; const d=designRidge(f); if(d) return d; return Math.round(areaA(f)*100*0.85/0.9); }
+function baseQty(it,f){ const a=areaA(f); if(it.basis==='10a') return it.rate*a/10; if(it.basis==='ridge100') return it.rate*ridgeM(f)/100; if(it.basis==='spray') return (it.water||0)*a/10/Math.max(1,it.dil||1); return it.rate; }
+function qtyOf(it,f){ const st=fstate(f); const ov=st.ov&&st.ov[it.id]; if(ov&&ov.qty!==''&&ov.qty!==undefined&&ov.qty!==null) return {q:+ov.qty,ov:true,why:ov.why||''}; return {q:baseQty(it,f),ov:false,why:''}; }
+function packs(it,q){ return it.pack>0?Math.ceil(q/it.pack-1e-9):0; }
+function costNet(it,q){ return it.pack>0&&it.price?q/it.pack*it.price:0; }
+function costPack(it,q){ return it.price?packs(it,q)*it.price:0; }
+function fieldItems(f){ const pid=patOf(f); return pid?itemsOf(pid):[]; }
+function fieldCost(f){ let net=0,pk=0,priced=0,nn=0; if(!isTarget(f)) return {net,pack:pk,priced,n:nn}; fieldItems(f).forEach(it=>{ if(!it.name) return; nn++; const q=qtyOf(it,f).q; if(it.price){ priced++; net+=costNet(it,q); pk+=costPack(it,q); } }); return {net,pack:pk,priced,n:nn}; }
+
+// ---- 画面 ----
+function render(){ $('sz-v-reg').hidden=S.ui.view!=='reg'; $('sz-v-area').hidden=S.ui.view!=='area'; $('sz-v-field').hidden=true; $('sz-v-order').hidden=S.ui.view!=='order';
+  if(S.ui.view==='reg') renderReg(); else if(S.ui.view==='area') renderArea(); else renderOrder(); save(); }
+window.szShow=v=>{ S.ui.view=v; render(); };
+window.szRender=()=>render();
+
+// ---- パターン管理（資材登録ページの上）----
+function renderPatBar(){ const useN=pid=>FIELDS.filter(f=>isTarget(f)&&patOf(f)===pid).length;
+  $('sz-patBar').innerHTML=S.patterns.map(p=>`<span class="chip" style="display:inline-flex;gap:6px;align-items:center;font-family:var(--sans);font-size:12px;padding:4px 6px 4px 10px;color:var(--fg)"><input type="text" data-pn="${p.id}" value="${esc(p.name)}" style="width:${Math.max(4,p.name.length+1)}em;border:0;background:transparent;padding:0"><small style="color:var(--muted)">${useN(p.id)}枚${AREAS.filter(a=>S.areaPat[a]===p.id).length?'・基本:'+AREAS.filter(a=>S.areaPat[a]===p.id).join('/'):''}</small><button type="button" data-pcopy="${p.id}" title="コピーして新しいパターンに" style="padding:0 6px;background:transparent">⧉</button><button type="button" data-pdel="${p.id}" class="danger" style="padding:0 6px;background:transparent" ${useN(p.id)||AREAS.some(a=>S.areaPat[a]===p.id)?'disabled title="使ってる圃場かエリアがある"':''}>✕</button></span>`).join('')+`<input type="text" id="sz-newPat" placeholder="新しいパターン名（例：河南・砂地）" style="width:220px"><button type="button" id="sz-addPat">＋ パターンを足す</button>`;
+  $('sz-patBar').querySelectorAll('input[data-pn]').forEach(el=>el.addEventListener('change',()=>{ const p=patById(el.dataset.pn); const v=el.value.trim(); if(!v||S.patterns.some(x=>x!==p&&x.name===v)){ el.value=p.name; return; } p.name=v; save(); setTimeout(render,0); }));
+  $('sz-patBar').querySelectorAll('button[data-pcopy]').forEach(b=>b.onclick=()=>{ const src=patById(b.dataset.pcopy); const np={id:'p'+nid(),name:src.name+'のコピー',memo:''}; S.patterns.push(np); S.items.forEach(it=>{ if(it.rates&&it.rates[src.id]) it.rates[np.id]={rate:it.rates[src.id].rate}; }); save(); render(); const el=document.querySelector(`#sz-patBar input[data-pn="${np.id}"]`); el&&el.select(); });
+  $('sz-patBar').querySelectorAll('button[data-pdel]').forEach(b=>b.onclick=()=>{ const id=b.dataset.pdel; S.patterns=S.patterns.filter(p=>p.id!==id); S.items.forEach(it=>{ if(it.rates) delete it.rates[id]; }); if(S.ui.pat===id) S.ui.pat=S.patterns[0]&&S.patterns[0].id; save(); render(); });
+  $('sz-addPat').onclick=()=>{ const v=$('sz-newPat').value.trim(); if(!v||S.patterns.some(p=>p.name===v)) return; S.patterns.push({id:'p'+nid(),name:v,memo:''}); save(); render(); };
+  $('sz-newPat').addEventListener('keydown',e=>{ if(e.key==='Enter') $('sz-addPat').click(); });
+  // エリアの基本パターン（圃場ごとの指定がない圃場はこれで計算）
+  $('sz-areaPatBar').innerHTML='<span class="lbl">エリアの基本パターン</span>'+AREAS.map(a=>`<label style="display:inline-flex;align-items:center;gap:4px;font-size:13px">${a}<select data-ap="${a}">${S.patterns.map(p=>`<option value="${p.id}" ${S.areaPat[a]===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}</select></label>`).join('');
+  $('sz-areaPatBar').querySelectorAll('select[data-ap]').forEach(sel=>sel.onchange=()=>{ S.areaPat[sel.dataset.ap]=sel.value; save(); render(); if(window.uneRenderList) window.uneRenderList(); }); }
+
+// ---- 資材登録：横一列。直したら行の「保存」で反映 ----
+const drafts={}; let newRows=[];
+const blank=()=>({id:'new_'+nid(),cat:CATS[0],name:'',maker:'',basis:'10a',unit:'kg',water:undefined,dil:undefined,pack:20,packUnit:'袋',price:0,memo:'',rates:{},ex:false});
+function fillNewBar(){ if($('sz-n-cat').options.length) return; $('sz-n-cat').innerHTML=CATS.map(c=>`<option>${esc(c)}</option>`).join(''); $('sz-n-basis').innerHTML=Object.keys(BASIS).map(k=>`<option value="${k}">${BASIS[k]}</option>`).join(''); $('sz-n-unit').innerHTML=UNITS.map(u=>`<option>${u}</option>`).join('');
+  $('sz-n-cat').onchange=()=>{ const c=$('sz-n-cat').value; if(c==='生分解性マルチ'){ $('sz-n-basis').value='ridge100'; $('sz-n-unit').value='本'; $('sz-n-pack').value=1; $('sz-n-packUnit').value='本'; } else if(/液/.test(c)){ $('sz-n-basis').value='spray'; $('sz-n-unit').value='L'; $('sz-n-packUnit').value='本'; } };
+  $('sz-n-name').addEventListener('keydown',e=>{ if(e.key==='Enter') $('sz-rNew').click(); }); }
+$('sz-rNew').onclick=()=>{ const name=$('sz-n-name').value.trim(); const cat=$('sz-n-cat').value; const msg=$('sz-newmsg');
+  if(!name){ msg.textContent='品名を入れて。'; $('sz-n-name').focus(); return; }
+  if(S.items.find(i=>i.cat===cat&&(i.name||'').trim()===name)){ msg.textContent='同じ分類・品名の資材がもうある（下の表で量を直す）。'; return; }
+  const basis=$('sz-n-basis').value; const it={id:nid(),cat,name,maker:'',basis,unit:$('sz-n-unit').value,water:basis==='spray'?100:undefined,dil:basis==='spray'?500:undefined,pack:+$('sz-n-pack').value||0,packUnit:$('sz-n-packUnit').value,price:+$('sz-n-price').value||0,memo:'',rates:{},ex:false};
+  S.items.push(it); save(); $('sz-n-name').value=''; $('sz-n-price').value=''; renderRegList(); msg.textContent='登録した：'+name+'。下の表の「'+patName(S.patterns[0]&&S.patterns[0].id)+'」などパターンの列に量を入れる。'; const el=document.querySelector(`#sz-regTbl tr[data-id="${it.id}"] input[data-pat]`); if(el){ el.focus(); el.closest('tr').classList.add('sel'); } };
+$('sz-rq').addEventListener('input',()=>renderRegList());
+$('sz-rPat').onchange=()=>renderRegList();
+function rowOf(it){ const d=drafts[it.id]||it; const dirty=!!drafts[it.id]; const isNew=String(it.id).startsWith('new_'); const sp=d.basis==='spray'; const inp=(k,type,extra)=>`<input type="${type}" data-k="${k}" value="${esc(d[k]??'')}" ${extra||''}>`;
+  return `<tr data-id="${it.id}" class="${dirty?'dirty':''} ${d.ex?'ex':''}">
+    <td><div class="rowbtns"><button type="button" class="save" data-save="${it.id}" ${dirty?'':'hidden'}>保存</button><button type="button" data-undo="${it.id}" ${dirty?'':'hidden'}>取消</button></div></td>
+    <td><select data-k="cat">${CATS.map(c=>`<option ${c===d.cat?'selected':''}>${esc(c)}</option>`).join('')}</select></td>
+    <td>${inp('name','text','placeholder="品名"')}</td><td>${inp('maker','text','placeholder="任意"')}</td>
+    <td><select data-k="basis">${Object.keys(BASIS).map(k=>`<option value="${k}" ${k===d.basis?'selected':''}>${BASIS[k]}</option>`).join('')}</select></td>
+    <td><select data-k="unit">${UNITS.map(u=>`<option ${u===d.unit?'selected':''}>${u}</option>`).join('')}</select></td>
+    ${S.patterns.map(p=>`<td class="num ar"><input type="number" data-pat="${p.id}" step="0.1" value="${it.rates&&it.rates[p.id]?it.rates[p.id].rate:''}" placeholder="–" title="${esc(p.name)}の基準量（${esc(d.unit)}）"></td>`).join('')}
+    <td class="num">${inp('pack','number','step="0.1"')}</td>
+    <td><select data-k="packUnit">${['袋','本','箱','缶'].map(u=>`<option ${u===d.packUnit?'selected':''}>${u}</option>`).join('')}</select></td>
+    <td class="num">${inp('price','number','step="10"')}</td>
+    <td class="num">${inp('water','number',`step="10" ${sp?'':'disabled'}`)}</td><td class="num">${inp('dil','number',`step="50" ${sp?'':'disabled'}`)}</td>
+    <td>${inp('memo','text','')}</td>
+    <td><button type="button" class="danger" data-del="${it.id}" title="資材を消す">✕</button></td></tr>`; }
+function renderRegList(){ const q=($('sz-rq').value||'').trim(); const pf=$('sz-rPat').value||'all';
+  $('sz-regHead').innerHTML=`<th></th><th>分類</th><th>品名</th><th>メーカー・購入先</th><th>基準</th><th>単位</th>${S.patterns.map(p=>`<th class="num" title="パターン" style="color:var(--accent)">${esc(p.name)}</th>`).join('')}<th class="num">入り数</th><th>荷姿</th><th class="num">仕入単価 円</th><th class="num">水量 L/10a</th><th class="num">希釈 倍</th><th>メモ</th><th></th>`;
+  const list=S.items.filter(i=>(!q||(i.name||'').includes(q)||(i.maker||'').includes(q))&&(pf==='all'||(pf==='none'?!Object.keys(i.rates||{}).length:!!(i.rates&&i.rates[pf])))).sort((a,b)=>CATS.indexOf(a.cat)-CATS.indexOf(b.cat)||(a.name||'').localeCompare(b.name||'','ja'));
+  const tb=$('sz-regTbl').tBodies[0]; tb.innerHTML=list.map(rowOf).join('')||`<tr><td colspan="${12+S.patterns.length}" style="color:var(--muted)">資材がまだない。「＋ 新しい資材」から。</td></tr>`;
+  tb.querySelectorAll('input,select').forEach(el=>{ const h=()=>{ const tr=el.closest('tr'); const id=tr.dataset.id; const base=drafts[id]||S.items.find(i=>i.id===id)||newRows.find(r=>r.id===id); const d=drafts[id]||JSON.parse(JSON.stringify(base)); d.rates=d.rates||{};
+      if(el.dataset.pat){ return; }
+      else { const k=el.dataset.k; let v=el.value; if(['water','dil','pack','price'].includes(k)) v=v===''?undefined:+v; d[k]=v; if(k==='basis'&&v==='spray'){ d.water=d.water||100; d.dil=d.dil||500; d.unit='L'; } }
+      drafts[id]=d; tr.classList.add('dirty'); tr.querySelector('button[data-save]').hidden=false; tr.querySelector('button[data-undo]').hidden=false; if(el.dataset.k==='basis'){ setTimeout(()=>{ renderRegList(); const again=document.querySelector(`#sz-regTbl tr[data-id="${id}"] [data-k="basis"]`); again&&again.focus(); },0); } };
+    if(el.dataset.pat){ el.addEventListener('change',()=>{ const id=el.closest('tr').dataset.id; const it=S.items.find(i=>i.id===id); if(!it) return; it.rates=it.rates||{}; const v=el.value.trim(); if(v==='') delete it.rates[el.dataset.pat]; else it.rates[el.dataset.pat]={rate:+v||0}; save(); el.style.background='rgba(52,224,122,.25)'; setTimeout(()=>{ el.style.background=''; },600); }); return; }
+    el.addEventListener('input',h); el.addEventListener('change',h); });
+  const msg=$('sz-v-reg').querySelector('.hint');
+  tb.querySelectorAll('button[data-save]').forEach(b=>b.onclick=()=>{ const id=b.dataset.save; const d=drafts[id]; if(!d) return; const name=(d.name||'').trim();
+    if(!name){ msg.textContent='品名が空のままやと登録できへん。'; const el=document.querySelector(`#sz-regTbl tr[data-id="${id}"] input[data-k="name"]`); el&&el.focus(); return; }
+    const dup=S.items.find(i=>i.id!==id&&i.cat===d.cat&&(i.name||'').trim()===name); if(dup){ msg.textContent='同じ分類・品名の資材がもうある。そっちを直すか品名を変えて。'; return; }
+    d.name=name; d.ex=false; const isNew=String(id).startsWith('new_'); if(isNew){ newRows=newRows.filter(r=>r.id!==id); d.id=nid(); S.items.push(d); } else { Object.assign(S.items.find(i=>i.id===id),d); }
+    delete drafts[id]; save(); renderRegList(); msg.textContent=(isNew?'登録した：':'保存した：')+name; });
+  tb.querySelectorAll('button[data-undo]').forEach(b=>b.onclick=()=>{ const id=b.dataset.undo; delete drafts[id]; renderRegList(); });
+  tb.querySelectorAll('button[data-del]').forEach(b=>b.onclick=()=>{ const id=b.dataset.del; if(String(id).startsWith('new_')){ delete drafts[id]; newRows=newRows.filter(r=>r.id!==id); renderRegList(); return; } if(b.dataset.arm!=='1'){ b.dataset.arm='1'; b.textContent='削除？'; setTimeout(()=>{ b.dataset.arm=''; b.textContent='✕'; },4000); return; } const i=S.items.findIndex(x=>x.id===id); if(i>=0) S.items.splice(i,1); delete drafts[id]; save(); renderRegList(); });
+}
+function renderReg(){ fillNewBar(); renderPatBar(); const pf=$('sz-rPat').value||'all'; $('sz-rPat').innerHTML=`<option value="all">全パターン</option>`+S.patterns.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('')+`<option value="none">どのパターンにも入ってない</option>`; $('sz-rPat').value=[...$('sz-rPat').options].some(o=>o.value===pf)?pf:'all'; renderRegList(); }
+
+// ---- パターンの基準（旧エリア基準）----
+function renderCats(){ const used={}; S.items.forEach(i=>{ used[i.cat]=(used[i.cat]||0)+1; });
+  $('sz-catBar').innerHTML=CATS.map((c,i)=>`<span class="chip" style="display:inline-flex;gap:4px;align-items:center;font-family:var(--sans);font-size:12px;padding:4px 6px 4px 10px;color:var(--fg)"><input type="text" data-ci="${i}" value="${esc(c)}" style="width:${Math.max(5,c.length+1)}em;border:0;background:transparent;padding:0"><small style="color:var(--muted)">${used[c]||0}</small><button type="button" data-cdel="${i}" class="danger" style="padding:0 6px;background:transparent" ${used[c]?'disabled title="使ってる資材がある"':''}>✕</button></span>`).join('')+`<input type="text" id="sz-newCat" placeholder="新しい分類" style="width:140px"><button type="button" id="sz-addCatBtn">＋ 分類を足す</button>`;
+  $('sz-catBar').querySelectorAll('input[data-ci]').forEach(el=>el.addEventListener('change',()=>{ const i=+el.dataset.ci; const old=CATS[i], v=el.value.trim(); if(!v||v===old){ el.value=old; return; } if(CATS.includes(v)){ el.value=old; return; } CATS[i]=v; S.items.forEach(it=>{ if(it.cat===old) it.cat=v; }); S.cats=CATS; save(); setTimeout(renderArea,0); }));
+  $('sz-catBar').querySelectorAll('button[data-cdel]').forEach(b=>b.onclick=()=>{ CATS.splice(+b.dataset.cdel,1); S.cats=CATS; renderArea(); save(); });
+  $('sz-addCatBtn').onclick=()=>{ const v=$('sz-newCat').value.trim(); if(!v||CATS.includes(v)) return; CATS.push(v); S.cats=CATS; renderArea(); save(); };
+  $('sz-newCat').addEventListener('keydown',e=>{ if(e.key==='Enter') $('sz-addCatBtn').click(); }); }
+function renderArea(){ const pid=S.ui.pat; const pat=patById(pid); if(!pat){ $('sz-areaTitle').textContent='パターンがない'; return; } const items=itemsOf(pid); renderCats();
+  $('sz-patBtns').innerHTML=S.patterns.map(p=>{ const n=FIELDS.filter(f=>isTarget(f)&&patOf(f)===p.id).length; return `<button type="button" data-p="${p.id}" aria-pressed="${p.id===pid}">${esc(p.name)}<b>${n}枚</b></button>`; }).join('')+`<button type="button" class="ghost" id="sz-goReg2">パターンを足す・名前を変える →</button>`;
+  $('sz-patBtns').querySelectorAll('button[data-p]').forEach(b=>b.onclick=()=>{ S.ui.pat=b.dataset.p; render(); }); $('sz-goReg2').onclick=()=>{ if(window.uneShow) window.uneShow('matreg'); };
+  const fs=FIELDS.filter(f=>isTarget(f)&&patOf(f)===pid); const A=fs.reduce((s,f)=>s+areaA(f),0); const c=fs.reduce((s,f)=>s+fieldCost(f).net,0);
+  $('sz-areaStats').innerHTML=`<div class="stat"><b>${fs.length}</b><span>このパターンの圃場 枚</span></div><div class="stat"><b>${fmt(A,1)}</b><span>面積 a</span></div><div class="stat"><b>${items.length}</b><span>資材</span></div><div class="stat"><b>${c?fmt(c,0):'–'}</b><span>資材費 円（正味）</span></div><div class="stat"><b>${c&&A?fmt(c/A*10,0):'–'}</b><span>10aあたり 円</span></div>`;
+  $('sz-areaTitle').textContent=pat.name+' の基準';
+  $('sz-patAreas').innerHTML=AREAS.map(a=>`<button type="button" data-ap="${a}" aria-pressed="${S.areaPat[a]===pid}" style="font-size:12px;padding:4px 10px;border-radius:999px;margin-right:4px">${a}</button>`).join('');
+  $('sz-patAreas').querySelectorAll('button[data-ap]').forEach(b=>b.onclick=()=>{ const a=b.dataset.ap; if(S.areaPat[a]===pid){ if(S.patterns.length>1&&!confirmLike(b)) return; } S.areaPat[a]=pid; save(); render(); });
+  const notIn=S.items.filter(i=>!(i.rates&&i.rates[pid]));
+  $('sz-addCat').innerHTML=notIn.length?notIn.map(i=>`<option value="${i.id}">${esc(i.cat)}／${esc(i.name)||'（品名なし）'}</option>`).join(''):'<option value="">（登録済みの資材は全部入ってる）</option>'; $('sz-addItem').disabled=!notIn.length;
+  const tb=$('sz-itemTbl').tBodies[0]; let html='';
+  [...CATS,...items.map(i=>i.cat).filter(c=>!CATS.includes(c))].filter((c,i,a)=>a.indexOf(c)===i).forEach(c=>{ const rows=items.filter(i=>i.cat===c); if(!rows.length) return; html+=`<tr class="cat"><td colspan="10">${esc(c)}</td></tr>`;
+    rows.forEach(it=>{ const sp=it.basis==='spray'; html+=`<tr data-id="${it.id}" class="${it.ex?'ex':''}"><td>${esc(it.cat)}</td><td>${esc(it.name)||'<span style="color:var(--muted)">（品名なし）</span>'}</td><td>${BASIS[it.basis]||''}</td><td class="num">${sp?'<span style="color:var(--muted)">自動</span>':`<input type="number" data-rate="${it.id}" step="0.1" value="${it.rate}">`}</td><td>${esc(it.unit)}</td><td class="num">${sp?`${it.water||0}L÷${it.dil||1}`:''}</td><td>${it.pack?`${it.pack}${esc(it.unit)}/${esc(it.packUnit)}`:'–'}</td><td class="num">${it.price?fmt(it.price,0):'<span style="color:var(--muted)">なし</span>'}</td><td>${esc(it.memo||'')}</td><td><button type="button" class="danger" data-unassign="${it.id}" title="このパターンから外す">✕</button></td></tr>`; }); });
+  tb.innerHTML=html||'<tr><td colspan="10" style="color:var(--muted)">このパターンの資材がまだない。「＋ このパターンに足す」か「資材登録へ」。</td></tr>';
+  tb.querySelectorAll('input[data-rate]').forEach(el=>el.addEventListener('change',()=>{ const it=S.items.find(i=>i.id===el.dataset.rate); if(!it) return; it.rates[pid]={rate:+el.value||0}; save(); renderArea(); }));
+  tb.querySelectorAll('button[data-unassign]').forEach(b=>b.onclick=()=>{ const it=S.items.find(i=>i.id===b.dataset.unassign); if(it&&it.rates) delete it.rates[pid]; save(); renderArea(); });
+}
+function confirmLike(b){ return true; }
+$('sz-goReg').onclick=()=>{ if(window.uneShow) window.uneShow('matreg'); };
+$('sz-addItem').onclick=()=>{ const it=S.items.find(i=>i.id===$('sz-addCat').value); if(!it) return; it.rates=it.rates||{}; const other=Object.values(it.rates)[0]; it.rates[S.ui.pat]={rate:other?other.rate:0}; save(); renderArea(); };
+
+// ---- 圃場1枚の資材画面 ----
+function fieldRows(f){ const items=fieldItems(f); const st=fstate(f); const fc=fieldCost(f); const pid=patOf(f);
+  const rows=items.map(i=>{ const r=qtyOf(i,f); const ov=st.ov&&st.ov[i.id]||{}; return `<tr><td>${esc(i.cat)}</td><td>${esc(i.name)||'<span style="color:var(--muted)">（品名なし）</span>'}</td><td class="num">${BASIS[i.basis]} ${i.basis==='spray'?`${i.water||0}L÷${i.dil||1}`:i.rate+i.unit}</td><td class="num ${r.ov?'ov':''}">${fmt(r.q)} ${i.unit}</td><td class="num">${i.pack>0?packs(i,r.q)+' '+i.packUnit:'–'}</td><td class="num">${i.price?fmt(costNet(i,r.q),0):'<span style="color:var(--muted)">単価なし</span>'}</td><td class="num"><input type="number" data-f="${f.id}" data-i="${i.id}" data-k="qty" step="0.1" value="${ov.qty??''}" placeholder="基準どおり" style="width:104px"></td><td><input type="text" data-f="${f.id}" data-i="${i.id}" data-k="why" value="${esc(ov.why||'')}" placeholder="理由（土が悪い／前作の残り…）" style="width:200px"></td></tr>`; }).join('');
+  return `<div class="inline"><label>エリア <select data-f="${f.id}" data-k="area"><option value="">（グループから：${AREA_OF_GROUP[f.g]||'なし'}）</option>${AREAS.map(a=>`<option ${st.area===a?'selected':''}>${a}</option>`).join('')}</select></label>
+      <label>パターン <select data-f="${f.id}" data-k="pat"><option value="">（エリアの基本：${esc(patName(S.areaPat[areaOf(f)]||''))}）</option>${S.patterns.map(p=>`<option value="${p.id}" ${st.pat===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}</select></label>
+      <label>面積（手で直す） <input type="number" data-f="${f.id}" data-k="measA" step="0.01" value="${st.measA??''}" placeholder="${areaA(f).toFixed(2)}">a</label>
+      <label>畝m（設計から） <input type="number" data-f="${f.id}" data-k="ridgeM" step="1" value="${st.ridgeM??''}" placeholder="${designRidge(f)?'設計から ':'概算 '}${ridgeM(f)}" style="width:110px">m</label></div>
+      ${pid?`<div class="tblwrap"><table><thead><tr><th>分類</th><th>品名</th><th class="num">基準（${esc(patName(pid))}）</th><th class="num">この圃場</th><th class="num">荷姿</th><th class="num">金額 円</th><th class="num">この圃場だけ</th><th>理由</th></tr></thead><tbody>${rows}<tr class="cat"><td colspan="5" style="text-align:right">この圃場の資材費（正味）${fc.priced<fc.n?`<span class="chip warn">単価未入力 ${fc.n-fc.priced}品</span>`:''}</td><td class="num">${fc.net?fmt(fc.net,0):'–'}</td><td colspan="2" style="color:var(--muted);font-weight:400;font-size:11px">10aあたり ${fc.net&&areaA(f)?fmt(fc.net/areaA(f)*10,0):'–'}円／袋で買うと ${fc.pack?fmt(fc.pack,0):'–'}円</td></tr></tbody></table></div>`:'<p class="hint">エリアかパターンを選ぶと計算が出る。</p>'}`; }
+function bindField(box,rerender){ box.querySelectorAll('input,select').forEach(el=>el.addEventListener('change',()=>{ const st=fstate({id:+el.dataset.f}); const k=el.dataset.k; if(el.dataset.i){ st.ov=st.ov||{}; st.ov[el.dataset.i]=st.ov[el.dataset.i]||{}; st.ov[el.dataset.i][k]=k==='qty'?(el.value===''?'':+el.value):el.value; } else if(k==='pat'){ if(el.value) st.pat=el.value; else delete st.pat; } else st[k]=el.value; save(); rerender(); if(window.uneRefreshCtx) window.uneRefreshCtx(); })); }
+window.szRenderField=function(fid,containerId){ const f=FIELDS.find(x=>x.id===+fid); const box=$(containerId); if(!f||!box) return; const area=areaOf(f); const fc=fieldCost(f); const st=fstate(f); const pid=patOf(f);
+  const tgl=`<div class="inline" style="margin:0 0 12px"><span>今年の作付け</span><div class="seg" style="display:inline-flex"><button type="button" data-tg="1" aria-pressed="${isTarget(f)}">対象（さつまいも）</button><button type="button" data-tg="0" aria-pressed="${!isTarget(f)}">対象外</button></div>${!isTarget(f)?`<label>理由 <select data-f="${f.id}" data-k="offReason">${OFF_REASONS.map(r=>`<option ${(st.offReason||OFF_REASONS[0])===r?'selected':''}>${r}</option>`).join('')}</select></label>`:''}</div>`;
+  const bind=()=>{ bindField(box,()=>window.szRenderField(fid,containerId)); box.querySelectorAll('button[data-tg]').forEach(b=>b.onclick=()=>{ window.szSetTarget([f.id],b.dataset.tg==='1'); window.szRenderField(fid,containerId); if(window.uneRefreshCtx) window.uneRefreshCtx(); }); };
+  if(!isTarget(f)){ box.innerHTML=tgl+`<div class="frow"><div class="body" style="border-top:0;padding:16px"><b>この圃場は対象外（${esc(st.offReason||OFF_REASONS[0])}）</b><p class="hint">資材の計算・発注まとめ・集計に入らん。戻すときは上の「対象」。設計図は対象外でも描ける。</p></div></div>`; bind(); return; }
+  box.innerHTML=tgl+`<div class="stats"><div class="stat"><b>${fmt(areaA(f),2)}</b><span>面積 a（${st.measA?'手入力':(window.uneAreaOf&&window.uneAreaOf(f.id)>0?'外周から':'アグリノート')}）</span></div><div class="stat"><b>${fmt(ridgeM(f),0)}</b><span>畝 m（${designRidge(f)?'設計から':'概算'}）</span></div><div class="stat"><b>${area||'未設定'}</b><span>エリア</span></div><div class="stat"><b>${esc(patName(pid))}</b><span>パターン（${patIsOwn(f)?'この圃場だけ':'エリアの基本'}）</span></div><div class="stat"><b>${fc.net?fmt(fc.net,0):'–'}</b><span>資材費 円（正味）</span></div><div class="stat"><b>${fc.net&&areaA(f)?fmt(fc.net/areaA(f)*10,0):'–'}</b><span>10aあたり 円</span></div></div>
+    <h2><b>${esc(f.n)} の投入量</b><span>パターンの基準 × 面積（マルチは畝m）。例外は右の「この圃場だけ」に量と理由</span></h2>
+    <div class="frow"><div class="body" style="border-top:0">${fieldRows(f)}</div></div>`;
+  bind(); };
+
+// ---- 発注まとめ（エリア別。各圃場はそのパターンで計算）----
+$('sz-oScope').innerHTML=`<option value="all">全エリア</option>`+AREAS.map(a=>`<option>${a}だけ</option>`).join('');
+$('sz-oScope').onchange=()=>{ S.ui.scope=$('sz-oScope').value; renderOrder(); save(); }; $('sz-oUnit').onchange=()=>{ S.ui.ounit=$('sz-oUnit').value; renderOrder(); save(); };
+function renderOrder(){ $('sz-oScope').value=S.ui.scope||'all'; $('sz-oUnit').value=S.ui.ounit||'pack'; const scope=($('sz-oScope').value||'all').replace('だけ',''); const byPack=$('sz-oUnit').value==='pack';
+  const rows={}; let cost=0, fieldsN=0;
+  FIELDS.filter(f=>isTarget(f)).forEach(f=>{ const area=areaOf(f); if(!area) return; if(scope!=='all'&&scope!==area) return; fieldsN++;
+    fieldItems(f).forEach(it=>{ if(!it.name) return; const key=it.cat+'|'+it.name+'|'+it.unit; rows[key]=rows[key]||{cat:it.cat,name:it.name,unit:it.unit,packUnit:it.packUnit,pack:it.pack,price:it.price,per:{},qty:{},cost:0};
+      const r=qtyOf(it,f); rows[key].qty[area]=(rows[key].qty[area]||0)+r.q; rows[key].per[area]=(rows[key].per[area]||0)+packs(it,r.q); rows[key].cost+=packs(it,r.q)*(it.price||0); }); });
+  const list=Object.values(rows).sort((a,b)=>CATS.indexOf(a.cat)-CATS.indexOf(b.cat)||a.name.localeCompare(b.name,'ja')); list.forEach(r=>cost+=r.cost);
+  $('sz-orderStats').innerHTML=`<div class="stat"><b>${fieldsN}</b><span>圃場 枚（対象）</span></div><div class="stat"><b>${list.length}</b><span>資材 品目</span></div><div class="stat"><b>${cost?fmt(cost,0):'–'}</b><span>概算 円（袋で買う・単価入力分）</span></div>`;
+  $('sz-orderTbl').tBodies[0].innerHTML=list.map(r=>{ const cells=AREAS.map(a=>{ const v=byPack?r.per[a]:r.qty[a]; return `<td class="num">${v?fmt(v,byPack?0:1):''}</td>`; }).join(''); const tot=AREAS.reduce((s,a)=>s+(byPack?(r.per[a]||0):(r.qty[a]||0)),0);
+    return `<tr><td>${esc(r.cat)}</td><td>${esc(r.name)}</td>${cells}<td class="num"><b>${fmt(tot,byPack?0:1)}</b> ${byPack?esc(r.packUnit):esc(r.unit)}</td><td>${r.pack?`${r.pack}${esc(r.unit)}/${esc(r.packUnit)}`:'–'}</td><td class="num">${r.cost?fmt(r.cost,0):''}</td></tr>`; }).join('')||'<tr><td colspan="10" style="color:var(--muted)">品名が入った資材がまだない。</td></tr>';
+}
+
+load(); render();
+};
 
 // ===== 起動 =====
 window.initApp=function(){ ME=localStorage.getItem('une_user')||''; if(!ME){ showLogin(''); return; } $('meName').textContent=ME; boot(); };
