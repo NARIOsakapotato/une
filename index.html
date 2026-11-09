@@ -220,6 +220,11 @@ input[type=search]{width:100%;font:inherit;font-size:14px;padding:9px 12px;borde
 .szs .newbar button.primary{padding:8px 18px}
 .szs .newbar .nbsep{flex-basis:100%;height:0}
 .szs .newbar label b{color:var(--fg)}
+.szs .newbar label.pk{color:var(--fg)}
+.szs .uecho{margin-left:3px;color:var(--muted)}
+.szs td.pkcell{white-space:nowrap}
+.szs td.pkcell select{max-width:64px}
+.szs td.pkcell input{width:64px}
 .szs .npat{font-size:12px;padding:4px 10px;border-radius:999px;background:var(--panel2);color:var(--muted);margin-right:4px}
 .szs .npat[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);font-weight:700}
 .szs #sz-regTbl td.ar input{width:74px;font-size:15px;-moz-appearance:textfield}
@@ -450,7 +455,7 @@ input[type=search]{width:100%;font:inherit;font-size:14px;padding:9px 12px;borde
   <h2><b>① 資材を登録</b><span>この行に打って「登録」。登録したら下の表に出る</span></h2>
   <div class="newbar" id="sz-newbar">
     <select id="sz-n-cat"></select><input type="text" id="sz-n-name" placeholder="品名（必須）" style="flex:2;min-width:160px"><select id="sz-n-basis"></select><select id="sz-n-unit"></select>
-    <label>一袋あたり<input type="number" id="sz-n-pack" step="0.1" value="20" style="width:64px"></label><select id="sz-n-packUnit"><option>袋</option><option>本</option><option>箱</option><option>缶</option></select>
+    <label class="pk">荷姿：1<select id="sz-n-packUnit"><option>袋</option><option>本</option><option>箱</option><option>缶</option></select>＝<input type="number" id="sz-n-pack" step="0.1" value="20" style="width:64px"><span class="uecho">kg</span></label>
     <label>単価<input type="number" id="sz-n-price" step="10" placeholder="円" style="width:80px"></label>
     <span class="nbsep"></span>
     <label><b>10aあたりの量</b><input type="number" id="sz-n-rate" step="0.1" placeholder="例 80" style="width:84px"><span id="sz-n-rateUnit">kg</span></label>
@@ -1108,8 +1113,8 @@ const drafts={}; let newRows=[];
 const blank=()=>({id:'new_'+nid(),cat:CATS[0],name:'',maker:'',basis:'10a',unit:'kg',water:undefined,dil:undefined,pack:20,packUnit:'袋',price:0,memo:'',rates:{},ex:false});
 function fillNewBar(){ if($('sz-n-cat').options.length) return; $('sz-n-cat').innerHTML=CATS.map(c=>`<option>${esc(c)}</option>`).join(''); $('sz-n-basis').innerHTML=Object.keys(BASIS).map(k=>`<option value="${k}">${BASIS[k]}</option>`).join(''); $('sz-n-unit').innerHTML=UNITS.map(u=>`<option>${u}</option>`).join('');
   $('sz-n-cat').onchange=()=>{ const c=$('sz-n-cat').value; if(c==='生分解性マルチ'){ $('sz-n-basis').value='ridge100'; $('sz-n-unit').value='本'; $('sz-n-pack').value=1; $('sz-n-packUnit').value='本'; } else if(/液/.test(c)){ $('sz-n-basis').value='spray'; $('sz-n-unit').value='L'; $('sz-n-packUnit').value='本'; } };
-  $('sz-n-name').addEventListener('keydown',e=>{ if(e.key==='Enter') $('sz-rNew').click(); }); $('sz-n-unit').addEventListener('change',()=>{ $('sz-n-rateUnit').textContent=$('sz-n-unit').value; }); }
-function paintNewPats(){ const cur={}; document.querySelectorAll('#sz-n-pats .npat').forEach(b=>cur[b.dataset.p]=b.getAttribute('aria-pressed')==='true'); $('sz-n-pats').innerHTML=S.patterns.map(p=>`<button type="button" class="npat" data-p="${p.id}" aria-pressed="${cur[p.id]===undefined?'true':cur[p.id]}">${esc(p.name)}</button>`).join(''); $('sz-n-pats').querySelectorAll('.npat').forEach(b=>b.onclick=()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true')); $('sz-n-rateUnit').textContent=$('sz-n-unit').value||'kg'; }
+  $('sz-n-name').addEventListener('keydown',e=>{ if(e.key==='Enter') $('sz-rNew').click(); }); $('sz-n-unit').addEventListener('change',()=>{ $('sz-n-rateUnit').textContent=$('sz-n-unit').value; document.querySelectorAll('#sz-newbar .uecho').forEach(e=>e.textContent=$('sz-n-unit').value); }); }
+function paintNewPats(){ const cur={}; document.querySelectorAll('#sz-n-pats .npat').forEach(b=>cur[b.dataset.p]=b.getAttribute('aria-pressed')==='true'); $('sz-n-pats').innerHTML=S.patterns.map(p=>`<button type="button" class="npat" data-p="${p.id}" aria-pressed="${cur[p.id]===undefined?'true':cur[p.id]}">${esc(p.name)}</button>`).join(''); $('sz-n-pats').querySelectorAll('.npat').forEach(b=>b.onclick=()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true')); $('sz-n-rateUnit').textContent=$('sz-n-unit').value||'kg'; document.querySelectorAll('#sz-newbar .uecho').forEach(e=>e.textContent=$('sz-n-unit').value||'kg'); }
 $('sz-rNew').onclick=()=>{ const name=$('sz-n-name').value.trim(); const cat=$('sz-n-cat').value; const msg=$('sz-newmsg');
   if(!name){ msg.textContent='品名を入れて。'; $('sz-n-name').focus(); return; }
   if(S.items.find(i=>i.cat===cat&&(i.name||'').trim()===name)){ msg.textContent='同じ分類・品名の資材がもうある（下の表で量を直す）。'; return; }
@@ -1126,20 +1131,19 @@ function rowOf(it){ const d=drafts[it.id]||it; const dirty=!!drafts[it.id]; cons
     <td><select data-k="basis">${Object.keys(BASIS).map(k=>`<option value="${k}" ${k===d.basis?'selected':''}>${BASIS[k]}</option>`).join('')}</select></td>
     <td><select data-k="unit">${UNITS.map(u=>`<option ${u===d.unit?'selected':''}>${u}</option>`).join('')}</select></td>
     ${S.patterns.map(p=>`<td class="num ar"><input type="number" data-pat="${p.id}" step="0.1" value="${it.rates&&it.rates[p.id]?it.rates[p.id].rate:''}" placeholder="–" title="${esc(p.name)}の基準量（${esc(d.unit)}）"></td>`).join('')}
-    <td class="num">${inp('pack','number','step="0.1"')}</td>
-    <td><select data-k="packUnit">${['袋','本','箱','缶'].map(u=>`<option ${u===d.packUnit?'selected':''}>${u}</option>`).join('')}</select></td>
+    <td class="pkcell">1<select data-k="packUnit">${['袋','本','箱','缶'].map(u=>`<option ${u===d.packUnit?'selected':''}>${u}</option>`).join('')}</select>＝${inp('pack','number','step="0.1"')}<span class="uecho">${esc(d.unit)}</span></td>
     <td class="num">${inp('price','number','step="10"')}</td>
     <td class="num">${inp('water','number',`step="10" ${sp?'':'disabled'}`)}</td><td class="num">${inp('dil','number',`step="50" ${sp?'':'disabled'}`)}</td>
     <td>${inp('memo','text','')}</td>
     <td><button type="button" class="danger" data-del="${it.id}" title="資材を消す">✕</button></td></tr>`; }
 function renderRegList(){ const q=($('sz-rq').value||'').trim(); const pf=$('sz-rPat').value||'all';
-  $('sz-regHead').innerHTML=`<th></th><th>分類</th><th>品名</th><th>メーカー・購入先</th><th>基準</th><th>単位</th>${S.patterns.map(p=>`<th class="num ar" title="パターンごとの10aあたりの量" style="color:var(--accent)">${esc(p.name)}</th>`).join('')}<th class="num">一袋あたり</th><th>荷姿</th><th class="num">仕入単価 円</th><th class="num">水量 L/10a</th><th class="num">希釈 倍</th><th>メモ</th><th></th>`;
+  $('sz-regHead').innerHTML=`<th></th><th>分類</th><th>品名</th><th>メーカー・購入先</th><th>基準</th><th>単位</th>${S.patterns.map(p=>`<th class="num ar" title="パターンごとの10aあたりの量" style="color:var(--accent)">${esc(p.name)}</th>`).join('')}<th>荷姿（1袋＝何kg）</th><th class="num">仕入単価 円</th><th class="num">水量 L/10a</th><th class="num">希釈 倍</th><th>メモ</th><th></th>`;
   const list=S.items.filter(i=>(!q||(i.name||'').includes(q)||(i.maker||'').includes(q))&&(pf==='all'||(pf==='none'?!Object.keys(i.rates||{}).length:!!(i.rates&&i.rates[pf])))).sort((a,b)=>CATS.indexOf(a.cat)-CATS.indexOf(b.cat)||(a.name||'').localeCompare(b.name||'','ja'));
   const tb=$('sz-regTbl').tBodies[0]; tb.innerHTML=list.map(rowOf).join('')||`<tr><td colspan="${12+S.patterns.length}" style="color:var(--muted)">資材がまだない。「＋ 新しい資材」から。</td></tr>`;
   tb.querySelectorAll('input,select').forEach(el=>{ const h=()=>{ const tr=el.closest('tr'); const id=tr.dataset.id; const base=drafts[id]||S.items.find(i=>i.id===id)||newRows.find(r=>r.id===id); const d=drafts[id]||JSON.parse(JSON.stringify(base)); d.rates=d.rates||{};
       if(el.dataset.pat){ return; }
       else { const k=el.dataset.k; let v=el.value; if(['water','dil','pack','price'].includes(k)) v=v===''?undefined:+v; d[k]=v; if(k==='basis'&&v==='spray'){ d.water=d.water||100; d.dil=d.dil||500; d.unit='L'; } }
-      drafts[id]=d; tr.classList.add('dirty'); tr.querySelector('button[data-save]').hidden=false; tr.querySelector('button[data-undo]').hidden=false; if(el.dataset.k==='basis'){ setTimeout(()=>{ renderRegList(); const again=document.querySelector(`#sz-regTbl tr[data-id="${id}"] [data-k="basis"]`); again&&again.focus(); },0); } };
+      drafts[id]=d; tr.classList.add('dirty'); tr.querySelector('button[data-save]').hidden=false; tr.querySelector('button[data-undo]').hidden=false; if(el.dataset.k==='basis'||el.dataset.k==='unit'){ const kk=el.dataset.k; setTimeout(()=>{ renderRegList(); const again=document.querySelector(`#sz-regTbl tr[data-id="${id}"] [data-k="${kk}"]`); again&&again.focus(); },0); } };
     if(el.dataset.pat){ const hp=()=>{ const id=el.closest('tr').dataset.id; const it=S.items.find(i=>i.id===id); if(!it) return; it.rates=it.rates||{}; const v=el.value.trim(); if(v==='') delete it.rates[el.dataset.pat]; else it.rates[el.dataset.pat]={rate:+v||0}; save(); el.style.background='rgba(52,224,122,.25)'; setTimeout(()=>{ el.style.background=''; },600); }; el.addEventListener('input',hp); el.addEventListener('change',hp); el.addEventListener('keydown',e=>{ if(e.key==='Enter') el.blur(); }); return; }
     el.addEventListener('input',h); el.addEventListener('change',h); });
   const msg=$('sz-v-reg').querySelector('.hint');
